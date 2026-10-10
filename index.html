@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html><head><script src="aa77ae4c49f525bc.js"></script>
+<script src="feb8ddc9d0566a4f.js"></script>
+<script>
+window.__DC_SRC = "\nconst LINES = [\"Hi, I'm Ratna.\", \"I Design.\", \"I Think.\", \"I Question.\"];\n\nclass Component extends DCLogic {\n  state = { typed: ['', '', '', ''], line: 0, phase: 0, layout: null };\n  timers = [];\n  h1Ref = React.createRef();\n  m1 = React.createRef(); m2 = React.createRef(); m3 = React.createRef(); m4 = React.createRef();\n\n  componentDidMount() {\n    this.onResize = () => this.measure();\n    window.addEventListener('resize', this.onResize);\n    const go = () => { this.measure(); this.start(); };\n    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(go);\n  }\n  componentWillUnmount() { this.clear(); window.removeEventListener('resize', this.onResize); }\n  clear() { this.timers.forEach(clearTimeout); this.timers = []; }\n  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }\n\n  measure() {\n    const h1 = this.h1Ref.current;\n    if (!h1) return;\n    const fs = parseFloat(getComputedStyle(h1).fontSize);\n    const lh = fs * 0.93;\n    const widths = [this.m1, this.m2, this.m3, this.m4].map(r => r.current ? r.current.getBoundingClientRect().width : 0);\n    const gap = fs * 0.3;\n    const total = widths.reduce((a, b) => a + b, 0) + gap * 3;\n    const vw = window.innerWidth, vh = window.innerHeight;\n    const s = Math.min(1, (vw * 0.9) / total);\n    const rect = h1.getBoundingClientRect();\n    const top = rect.top + window.scrollY;\n    const ox = (vw - s * total) / 2 - rect.left;\n    const oy = vh / 2 - (s * lh) / 2 - top;\n    const xs = []; let acc = 0;\n    widths.forEach((w) => { xs.push(ox + acc * s); acc += w + gap; });\n    this.setState({ layout: { s, oy, xs, lh } });\n  }\n\n  start() {\n    this.clear();\n    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n    if (reduce) return this.finish();\n    this.setState({ typed: ['', '', '', ''], line: 0, phase: 0, skipped: false });\n    const speed = this.props.typeSpeed ?? 70;\n    let t = 600;\n    LINES.forEach((text, li) => {\n      for (let i = 1; i <= text.length; i++) {\n        this.later(() => this.setState(s => {\n          const typed = [...s.typed]; typed[li] = text.slice(0, i);\n          return { typed, line: li };\n        }), t);\n        t += speed;\n      }\n      t += speed * 2;\n    });\n    const hold = this.props.holdTime ?? 700;\n    this.later(() => this.setState({ phase: 1 }), t + hold);\n    this.later(() => this.setState({ phase: 2 }), t + hold + 2300);\n    this.later(() => this.setState({ phase: 3 }), t + hold + 2900);\n  }\n\n  finish() {\n    this.clear();\n    this.setState({ typed: [...LINES], line: 3, phase: 3, skipped: true });\n  }\n\n  renderVals() {\n    const { typed, line, phase, layout } = this.state;\n    const typing = phase === 0;\n    const caret = React.createElement('span', {\n      'aria-hidden': true,\n      style: { display: 'inline-block', width: '.07em', height: '.8em', marginLeft: '.06em', background: '#111', verticalAlign: '-.05em', animation: 'caretBlink 1s step-end infinite' }\n    });\n    const caretOn = (i) => (typing && line === i) || (phase === 3 && i === 3);\n    const t = (i) => {\n      if (!layout) return 'none';\n      if (typing) return `translate(${layout.xs[i]}px, ${layout.oy}px) scale(${layout.s})`;\n      return `translate(0px, ${i * layout.lh}px) scale(1)`;\n    };\n    const tr = (i) => typing ? 'opacity .3s ease' : `transform 1.1s cubic-bezier(.65,0,.35,1) ${i * 90}ms, opacity .3s ease`;\n    const show = phase >= 1;\n    const instant = phase === 3 && this.state.skipped;\n    const STORY = [\n      [['I started with'], ['UI:', 'h'], ['colours, typography, layouts. I still love that part.']],\n      [['Real products taught me that'], ['polish is only half of it.', 'h'], ['If a user gets confused, the design'], [\"isn't doing its job.\", 'r']],\n      [['Now I think about'], ['how things feel,', 'h'], ['how quickly they make sense, and how small decisions add up. Still learning every day, across design, product and business, without losing the creativity.']]\n    ];\n    let wi = 0;\n    const step = 22;\n    const words = STORY.map(chunks => {\n      const list = [];\n      chunks.forEach(([text, kind]) => text.split(' ').forEach(t => list.push({ t, kind })));\n      return list;\n    });\n    const total = words.reduce((a, l) => a + l.length, 0) * step + STORY.length * 140;\n    let hi = 0;\n    const paras = words.map((list, pi) => ({\n      words: list.map((w, i) => {\n        const next = list[i + 1];\n        const joined = w.kind && next && next.kind === w.kind;\n        const d = instant ? 0 : wi++ * step + pi * 140;\n        const hd = instant ? 0 : total + 150 + (w.kind ? hi++ * 45 : 0);\n        return {\n          t: joined ? w.t + '\\u00a0' : w.t,\n          sp: joined || !next ? '' : ' ',\n          o: show ? 1 : 0,\n          blur: show ? '0px' : '6px',\n          y: show ? '0px' : '0.5em',\n          d: d + 'ms',\n          hd: hd + 'ms',\n          hlColor: w.kind === 'h' ? '#ffd84d' : w.kind === 'r' ? 'rgba(212,73,31,.22)' : 'transparent',\n          hlSize: show && w.kind ? '100%' : '0%',\n          color: w.kind === 'r' ? '#d4491f' : w.kind ? '#111' : '#33332f',\n          weight: w.kind ? 600 : 400\n        };\n      })\n    }));\n    const hov = this.state.hov;\n    const setH = (k) => () => this.setState({ hov: k });\n    return {\n      paras,\n      hWorkOn: setH('work'), hHireOn: setH('hire'), hWhoOn: setH('who'), hOff: setH(null),\n      workColor: hov === 'work' ? '#ffd84d' : '#fbfbfa',\n      workLift: hov === 'work' ? 'translateY(-3px) rotate(-1deg)' : 'none',\n      workShadow: hov === 'work' ? '4px 5px 0 #ffd84d' : '0 0 0 transparent',\n      workArrow: hov === 'work' ? '6px' : '0px',\n      hireFill: hov === 'hire' ? 1 : 0,\n      hireLift: hov === 'hire' ? 'translateY(-3px) rotate(1deg)' : 'none',\n      hireShadow: hov === 'hire' ? '4px 5px 0 #111' : '0 0 0 transparent',\n      whoColor: hov === 'who' ? '#d4491f' : '#111',\n      whoLine: hov === 'who' ? 1 : 0,\n      restScale: phase >= 2 ? 1 : 0.92,\n      noteDrop: phase >= 2 ? '0px' : '-28px',\n      noteSpin: phase >= 2 ? '0deg' : '-8deg',\n      noteSpin2: phase >= 2 ? '0deg' : '7deg',\n      h1Ref: this.h1Ref, m1: this.m1, m2: this.m2, m3: this.m3, m4: this.m4,\n      ready: layout ? 1 : 0,\n      t1: t(0), t2: t(1), t3: t(2), t4: t(3),\n      tr1: tr(0), tr2: tr(1), tr3: tr(2), tr4: tr(3),\n      l1: typed[0], l2: typed[1], l3: typed[2], l4: typed[3],\n      c1: caretOn(0), c2: caretOn(1), c3: caretOn(2), c4: caretOn(3),\n      caret,\n      markScale: typed[1].length === LINES[1].length ? 1 : 0,\n      storyOpacity: phase >= 1 ? 1 : 0,\n      storyShift: phase >= 1 ? '0' : '14px',\n      restOpacity: phase >= 2 ? 1 : 0,\n      restShift: phase >= 2 ? '0' : '14px',\n      headerOpacity: phase >= 3 ? 1 : 0,\n      headerShift: phase >= 3 ? '0' : '-10px',\n      showReplay: phase === 3 && (this.props.showReplay ?? true),\n      showSkipHint: typing,\n      skip: () => { if (this.state.phase < 3) this.finish(); },\n      replay: (e) => { e.stopPropagation(); this.start(); }\n    };\n  }\n}\n";
+window.__DC_FN = function (DCLogic, StreamableLogic, React) {
+
+const LINES = ["Hi, I'm Ratna.", "I Design.", "I Think.", "I Question."];
+
+class Component extends DCLogic {
+  state = { typed: ['', '', '', ''], line: 0, phase: 0, layout: null };
+  timers = [];
+  h1Ref = React.createRef();
+  m1 = React.createRef(); m2 = React.createRef(); m3 = React.createRef(); m4 = React.createRef();
+
+  componentDidMount() {
+    this.onResize = () => this.measure();
+    window.addEventListener('resize', this.onResize);
+    const go = () => { this.measure(); this.start(); };
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(go);
+  }
+  componentWillUnmount() { this.clear(); window.removeEventListener('resize', this.onResize); }
+  clear() { this.timers.forEach(clearTimeout); this.timers = []; }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+
+  measure() {
+    const h1 = this.h1Ref.current;
+    if (!h1) return;
+    const fs = parseFloat(getComputedStyle(h1).fontSize);
+    const lh = fs * 0.93;
+    const widths = [this.m1, this.m2, this.m3, this.m4].map(r => r.current ? r.current.getBoundingClientRect().width : 0);
+    const gap = fs * 0.3;
+    const total = widths.reduce((a, b) => a + b, 0) + gap * 3;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const s = Math.min(1, (vw * 0.9) / total);
+    const rect = h1.getBoundingClientRect();
+    const top = rect.top + window.scrollY;
+    const ox = (vw - s * total) / 2 - rect.left;
+    const oy = vh / 2 - (s * lh) / 2 - top;
+    const xs = []; let acc = 0;
+    widths.forEach((w) => { xs.push(ox + acc * s); acc += w + gap; });
+    this.setState({ layout: { s, oy, xs, lh } });
+  }
+
+  start() {
+    this.clear();
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return this.finish();
+    this.setState({ typed: ['', '', '', ''], line: 0, phase: 0, skipped: false });
+    const speed = this.props.typeSpeed ?? 70;
+    let t = 600;
+    LINES.forEach((text, li) => {
+      for (let i = 1; i <= text.length; i++) {
+        this.later(() => this.setState(s => {
+          const typed = [...s.typed]; typed[li] = text.slice(0, i);
+          return { typed, line: li };
+        }), t);
+        t += speed;
+      }
+      t += speed * 2;
+    });
+    const hold = this.props.holdTime ?? 700;
+    this.later(() => this.setState({ phase: 1 }), t + hold);
+    this.later(() => this.setState({ phase: 2 }), t + hold + 2300);
+    this.later(() => this.setState({ phase: 3 }), t + hold + 2900);
+  }
+
+  finish() {
+    this.clear();
+    this.setState({ typed: [...LINES], line: 3, phase: 3, skipped: true });
+  }
+
+  renderVals() {
+    const { typed, line, phase, layout } = this.state;
+    const typing = phase === 0;
+    const caret = React.createElement('span', {
+      'aria-hidden': true,
+      style: { display: 'inline-block', width: '.07em', height: '.8em', marginLeft: '.06em', background: '#111', verticalAlign: '-.05em', animation: 'caretBlink 1s step-end infinite' }
+    });
+    const caretOn = (i) => (typing && line === i) || (phase === 3 && i === 3);
+    const t = (i) => {
+      if (!layout) return 'none';
+      if (typing) return `translate(${layout.xs[i]}px, ${layout.oy}px) scale(${layout.s})`;
+      return `translate(0px, ${i * layout.lh}px) scale(1)`;
+    };
+    const tr = (i) => typing ? 'opacity .3s ease' : `transform 1.1s cubic-bezier(.65,0,.35,1) ${i * 90}ms, opacity .3s ease`;
+    const show = phase >= 1;
+    const instant = phase === 3 && this.state.skipped;
+    const STORY = [
+      [['I started with'], ['UI:', 'h'], ['colours, typography, layouts. I still love that part.']],
+      [['Real products taught me that'], ['polish is only half of it.', 'h'], ['If a user gets confused, the design'], ["isn't doing its job.", 'r']],
+      [['Now I think about'], ['how things feel,', 'h'], ['how quickly they make sense, and how small decisions add up. Still learning every day, across design, product and business, without losing the creativity.']]
+    ];
+    let wi = 0;
+    const step = 22;
+    const words = STORY.map(chunks => {
+      const list = [];
+      chunks.forEach(([text, kind]) => text.split(' ').forEach(t => list.push({ t, kind })));
+      return list;
+    });
+    const total = words.reduce((a, l) => a + l.length, 0) * step + STORY.length * 140;
+    let hi = 0;
+    const paras = words.map((list, pi) => ({
+      words: list.map((w, i) => {
+        const next = list[i + 1];
+        const joined = w.kind && next && next.kind === w.kind;
+        const d = instant ? 0 : wi++ * step + pi * 140;
+        const hd = instant ? 0 : total + 150 + (w.kind ? hi++ * 45 : 0);
+        return {
+          t: joined ? w.t + '\u00a0' : w.t,
+          sp: joined || !next ? '' : ' ',
+          o: show ? 1 : 0,
+          blur: show ? '0px' : '6px',
+          y: show ? '0px' : '0.5em',
+          d: d + 'ms',
+          hd: hd + 'ms',
+          hlColor: w.kind === 'h' ? '#ffd84d' : w.kind === 'r' ? 'rgba(212,73,31,.22)' : 'transparent',
+          hlSize: show && w.kind ? '100%' : '0%',
+          color: w.kind === 'r' ? '#d4491f' : w.kind ? '#111' : '#33332f',
+          weight: w.kind ? 600 : 400
+        };
+      })
+    }));
+    const hov = this.state.hov;
+    const setH = (k) => () => this.setState({ hov: k });
+    return {
+      paras,
+      hWorkOn: setH('work'), hHireOn: setH('hire'), hWhoOn: setH('who'), hOff: setH(null),
+      workColor: hov === 'work' ? '#ffd84d' : '#fbfbfa',
+      workLift: hov === 'work' ? 'translateY(-3px) rotate(-1deg)' : 'none',
+      workShadow: hov === 'work' ? '4px 5px 0 #ffd84d' : '0 0 0 transparent',
+      workArrow: hov === 'work' ? '6px' : '0px',
+      hireFill: hov === 'hire' ? 1 : 0,
+      hireLift: hov === 'hire' ? 'translateY(-3px) rotate(1deg)' : 'none',
+      hireShadow: hov === 'hire' ? '4px 5px 0 #111' : '0 0 0 transparent',
+      whoColor: hov === 'who' ? '#d4491f' : '#111',
+      whoLine: hov === 'who' ? 1 : 0,
+      restScale: phase >= 2 ? 1 : 0.92,
+      noteDrop: phase >= 2 ? '0px' : '-28px',
+      noteSpin: phase >= 2 ? '0deg' : '-8deg',
+      noteSpin2: phase >= 2 ? '0deg' : '7deg',
+      h1Ref: this.h1Ref, m1: this.m1, m2: this.m2, m3: this.m3, m4: this.m4,
+      ready: layout ? 1 : 0,
+      t1: t(0), t2: t(1), t3: t(2), t4: t(3),
+      tr1: tr(0), tr2: tr(1), tr3: tr(2), tr4: tr(3),
+      l1: typed[0], l2: typed[1], l3: typed[2], l4: typed[3],
+      c1: caretOn(0), c2: caretOn(1), c3: caretOn(2), c4: caretOn(3),
+      caret,
+      markScale: typed[1].length === LINES[1].length ? 1 : 0,
+      storyOpacity: phase >= 1 ? 1 : 0,
+      storyShift: phase >= 1 ? '0' : '14px',
+      restOpacity: phase >= 2 ? 1 : 0,
+      restShift: phase >= 2 ? '0' : '14px',
+      headerOpacity: phase >= 3 ? 1 : 0,
+      headerShift: phase >= 3 ? '0' : '-10px',
+      showReplay: phase === 3 && (this.props.showReplay ?? true),
+      showSkipHint: typing,
+      skip: () => { if (this.state.phase < 3) this.finish(); },
+      replay: (e) => { e.stopPropagation(); this.start(); }
+    };
+  }
+}
+
+;return (typeof Component!=="undefined"&&Component)||undefined;
+};
+</script>
+<script>window.__resources = {"https://unpkg.com/react@18.3.1/umd/react.production.min.js": "aa77ae4c49f525bc.js", "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "feb8ddc9d0566a4f.js"};</script>
+<meta charset="utf-8">
+<title>Ratna Rajput — Product Designer</title>
+<meta name="description" content="Ratna Rajput — product designer. Portfolio, case studies and contact.">
+<meta property="og:title" content="Ratna Rajput — Product Designer">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ffd84d'/%3E%3Ctext x='50' y='70' font-size='62' font-family='Georgia,serif' text-anchor='middle' fill='%23111'%3ER%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="2e38395c4a4ac9dd.js"></script>
+
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<style>/* latin-ext */
+@font-face {
+  font-family: 'Caveat Brush';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("97c494d960f8a0bc.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Caveat Brush';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("db29dca26092755d.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+html,body{margin:0;background:#fbfbfa;color:#111;font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#111;text-decoration:none}
+a:hover{color:#d4491f}
+@keyframes caretBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
+</helmet>
+
+<div sc-camel-on-click="{{ skip }}" style="position:relative;min-height:100vh;background:#fbfbfa;overflow:hidden;isolation:isolate">
+  <div style="position:absolute;inset:0;z-index:-1;background-image:linear-gradient(#e6e6e3 1px,transparent 1px),linear-gradient(90deg,#e6e6e3 1px,transparent 1px);background-size:96px 96px;opacity:.75"></div>
+
+  <header style="display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;padding:1.1rem clamp(1.25rem,4vw,3rem);opacity:{{ headerOpacity }};transform:translateY({{ headerShift }});transition:opacity .6s ease,transform .6s ease">
+    <span style="font-family:'Caveat Brush',cursive;font-size:1.6rem;transform:rotate(-2deg)">Ratna Rajput</span>
+    <nav style="display:flex;gap:clamp(1rem,3vw,2.6rem);flex-wrap:wrap">
+      <a href="who-i-am.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease" style-hover="color:#d4491f;transform:translateY(-2px) rotate(-3deg)">Who I AM?</a>
+      <a href="what-i-do.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease" style-hover="color:#d4491f;transform:translateY(-2px) rotate(-3deg)">What I Do?</a>
+      <a href="hire-me.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease" style-hover="color:#d4491f;transform:translateY(-2px) rotate(-3deg)">Hire ME!</a>
+    </nav>
+  </header>
+
+  <section data-screen-label="01 Start" style="max-width:1230px;margin:0 auto;padding:clamp(2rem,6vh,4.5rem) clamp(1.25rem,4vw,3rem) 4rem">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,26rem),1fr));gap:clamp(2.5rem,6vw,6rem);align-items:center">
+      <div>
+        <p style="margin:0;color:#6b6b66;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:{{ storyOpacity }};transition:opacity .7s ease">India · designing at a startup</p>
+
+        <h1 ref="{{ h1Ref }}" aria-label="Hi, I'm Ratna. I Design. I Think. I Question." style="position:relative;z-index:5;margin:.75rem 0 0;height:3.72em;font-family:'Caveat Brush',cursive;font-size:clamp(3.6rem,8vw,8rem);font-weight:400;letter-spacing:-.02em;line-height:.93">
+          <span ref="{{ m1 }}" aria-hidden="true" style="position:absolute;visibility:hidden;white-space:nowrap">Hi, I'm Ratna.</span>
+          <span ref="{{ m2 }}" aria-hidden="true" style="position:absolute;visibility:hidden;white-space:nowrap;padding:0 .08em">I Design.</span>
+          <span ref="{{ m3 }}" aria-hidden="true" style="position:absolute;visibility:hidden;white-space:nowrap">I Think.</span>
+          <em ref="{{ m4 }}" aria-hidden="true" style="position:absolute;visibility:hidden;white-space:nowrap;font-style:italic">I Question.</em>
+
+          <span style="position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0;transform:{{ t1 }};opacity:{{ ready }};transition:{{ tr1 }}">{{ l1 }}<sc-if value="{{ c1 }}" hint-placeholder-val="{{ false }}">{{ caret }}</sc-if></span>
+          <span style="position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0;transform:{{ t2 }};opacity:{{ ready }};transition:{{ tr2 }}"><span style="position:relative;z-index:0;padding:0 .08em"><span style="position:absolute;z-index:-1;inset:.11em -.04em -.06em;background:#ffd84d;transform:rotate(-1.3deg) scaleX({{ markScale }});transform-origin:left;transition:transform .45s cubic-bezier(.34,1.56,.64,1)"></span>{{ l2 }}</span><sc-if value="{{ c2 }}" hint-placeholder-val="{{ false }}">{{ caret }}</sc-if></span>
+          <span style="position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0;transform:{{ t3 }};opacity:{{ ready }};transition:{{ tr3 }}">{{ l3 }}<sc-if value="{{ c3 }}" hint-placeholder-val="{{ false }}">{{ caret }}</sc-if></span>
+          <em style="position:absolute;left:0;top:0;white-space:nowrap;color:#d4491f;font-style:italic;transform-origin:0 0;transform:{{ t4 }};opacity:{{ ready }};transition:{{ tr4 }}">{{ l4 }}<sc-if value="{{ c4 }}" hint-placeholder-val="{{ false }}">{{ caret }}</sc-if></em>
+        </h1>
+
+        <div style="display:grid;gap:.9rem;max-width:34rem;margin-top:1.6rem">
+          <sc-for list="{{ paras }}" as="para" hint-placeholder-count="3">
+            <p style="margin:0;color:#33332f;font-size:clamp(.98rem,1.35vw,1.1rem);line-height:1.65;text-wrap:pretty">
+              <sc-for list="{{ para.words }}" as="w" hint-placeholder-count="12"><span style="display:inline-block;padding:0 .04em;margin:0 -.04em;background-image:linear-gradient({{ w.hlColor }},{{ w.hlColor }});background-repeat:no-repeat;background-position:0 88%;background-size:{{ w.hlSize }} .42em;color:{{ w.color }};font-weight:{{ w.weight }};opacity:{{ w.o }};filter:blur({{ w.blur }});transform:translateY({{ w.y }});transition:opacity .45s ease {{ w.d }},filter .45s ease {{ w.d }},transform .55s cubic-bezier(.34,1.56,.64,1) {{ w.d }},background-size .5s cubic-bezier(.65,0,.35,1) {{ w.hd }}">{{ w.t }}</span>{{ w.sp }}</sc-for>
+            </p>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.82rem;margin-top:1.8rem">
+          <div style="opacity:{{ restOpacity }};transform:translateY({{ restShift }}) scale({{ restScale }});transition:opacity .5s ease,transform .6s cubic-bezier(.34,1.56,.64,1)">
+            <a href="what-i-do.html" sc-camel-on-mouse-enter="{{ hWorkOn }}" sc-camel-on-mouse-leave="{{ hOff }}" style="position:relative;display:inline-flex;align-items:center;gap:.5rem;padding:.95rem 1.4rem;border-radius:999px;background:#111;color:{{ workColor }};font-size:.9rem;font-weight:700;overflow:hidden;transform:{{ workLift }};box-shadow:{{ workShadow }};transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease,color .2s ease">
+              <span>See the work</span>
+              <span style="display:inline-block;transform:translateX({{ workArrow }});transition:transform .3s cubic-bezier(.34,1.56,.64,1)">→</span>
+            </a>
+          </div>
+          <div style="opacity:{{ restOpacity }};transform:translateY({{ restShift }}) scale({{ restScale }});transition:opacity .5s ease .1s,transform .6s cubic-bezier(.34,1.56,.64,1) .1s">
+            <a href="hire-me.html" sc-camel-on-mouse-enter="{{ hHireOn }}" sc-camel-on-mouse-leave="{{ hOff }}" style="position:relative;isolation:isolate;display:inline-flex;align-items:center;padding:.95rem 1.4rem;border:1.5px solid #111;border-radius:999px;background:#fff;color:#111;font-size:.9rem;font-weight:700;overflow:hidden;transform:{{ hireLift }};box-shadow:{{ hireShadow }};transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease">
+              <span style="position:absolute;inset:0;z-index:-1;background:#ffd84d;transform:scaleX({{ hireFill }});transform-origin:left;transition:transform .35s cubic-bezier(.65,0,.35,1)"></span>
+              Hire me
+            </a>
+          </div>
+          <div style="opacity:{{ restOpacity }};transform:translateY({{ restShift }}) scale({{ restScale }});transition:opacity .5s ease .2s,transform .6s cubic-bezier(.34,1.56,.64,1) .2s">
+            <a href="who-i-am.html" sc-camel-on-mouse-enter="{{ hWhoOn }}" sc-camel-on-mouse-leave="{{ hOff }}" style="position:relative;display:inline-block;padding:.4rem .2rem;color:{{ whoColor }};font-size:.9rem;font-weight:700;transition:color .2s ease">
+              Who I am
+              <span style="position:absolute;left:0;right:0;bottom:0;height:1.5px;background:#111"></span>
+              <span style="position:absolute;left:0;right:0;bottom:0;height:1.5px;background:#d4491f;transform:scaleX({{ whoLine }});transform-origin:left;transition:transform .35s cubic-bezier(.65,0,.35,1)"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1.25rem">
+        <div style="width:min(16rem,100%);opacity:{{ restOpacity }};transform:translateY({{ noteDrop }}) rotate({{ noteSpin }});transition:opacity .4s ease .25s,transform .8s cubic-bezier(.34,1.56,.64,1) .25s">
+        <article style="padding:1.3rem 1.3rem 1.4rem;background:#ffd84d;box-shadow:6px 7px 0 rgba(17,17,17,.14);transform:rotate(3deg);cursor:default;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease" style-hover="transform:rotate(0deg) translateY(-6px) scale(1.03);box-shadow:10px 14px 0 rgba(17,17,17,.12)">
+          <h3 style="margin:0;font-family:'Caveat Brush',cursive;font-size:1.7rem;font-weight:400">Currently</h3>
+          <p style="margin:.5rem 0 0;font-size:.92rem;line-height:1.5"><strong>UI/UX Designer</strong> at <strong>EAlphaBits</strong></p>
+          <p style="margin:.4rem 0 0;font-size:.85rem;line-height:1.5">1+ year designing in a startup environment.</p>
+        </article>
+        </div>
+        <div style="width:min(16rem,100%);opacity:{{ restOpacity }};transform:translateY({{ noteDrop }}) rotate({{ noteSpin2 }});transition:opacity .4s ease .4s,transform .8s cubic-bezier(.34,1.56,.64,1) .4s">
+        <article style="padding:1.3rem 1.3rem 1.4rem;background:#fff;border:1px solid #e6e6e3;box-shadow:0 12px 26px rgba(17,17,17,.1);transform:rotate(-2deg);cursor:default;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease" style-hover="transform:rotate(0deg) translateY(-6px) scale(1.03);box-shadow:0 20px 34px rgba(17,17,17,.14)">
+          <h3 style="margin:0;font-family:'Caveat Brush',cursive;font-size:1.7rem;font-weight:400">Working across</h3>
+          <strong style="display:block;margin-top:.5rem;font-size:.92rem">ARJUN 1.0</strong>
+          <p style="margin:.3rem 0 0;font-size:.85rem">Navigate Nxt · Web · Brand</p>
+          <strong style="display:block;margin-top:.6rem;font-size:.92rem;color:#d4491f">Next → Product Design</strong>
+        </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ showReplay }}" hint-placeholder-val="{{ false }}">
+    <button sc-camel-on-click="{{ replay }}" style="position:fixed;right:1.2rem;bottom:1.2rem;padding:.55rem 1rem;border:1.5px solid #111;border-radius:999px;background:#fff;font:700 .75rem 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:#ffd84d">↺ Replay intro</button>
+  </sc-if>
+  <sc-if value="{{ showSkipHint }}" hint-placeholder-val="{{ true }}">
+    <p style="position:fixed;left:50%;bottom:1.4rem;margin:0;transform:translateX(-50%);color:#9a9a94;font-size:.72rem;letter-spacing:.08em">click anywhere to skip</p>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;typeSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:70,&quot;min&quot;:25,&quot;max&quot;:140,&quot;step&quot;:5,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;holdTime&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:700,&quot;min&quot;:0,&quot;max&quot;:2500,&quot;step&quot;:100,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;showReplay&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const LINES = ["Hi, I'm Ratna.", "I Design.", "I Think.", "I Question."];
+
+class Component extends DCLogic {
+  state = { typed: ['', '', '', ''], line: 0, phase: 0, layout: null };
+  timers = [];
+  h1Ref = React.createRef();
+  m1 = React.createRef(); m2 = React.createRef(); m3 = React.createRef(); m4 = React.createRef();
+
+  componentDidMount() {
+    this.onResize = () => this.measure();
+    window.addEventListener('resize', this.onResize);
+    const go = () => { this.measure(); this.start(); };
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(go);
+  }
+  componentWillUnmount() { this.clear(); window.removeEventListener('resize', this.onResize); }
+  clear() { this.timers.forEach(clearTimeout); this.timers = []; }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+
+  measure() {
+    const h1 = this.h1Ref.current;
+    if (!h1) return;
+    const fs = parseFloat(getComputedStyle(h1).fontSize);
+    const lh = fs * 0.93;
+    const widths = [this.m1, this.m2, this.m3, this.m4].map(r => r.current ? r.current.getBoundingClientRect().width : 0);
+    const gap = fs * 0.3;
+    const total = widths.reduce((a, b) => a + b, 0) + gap * 3;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const s = Math.min(1, (vw * 0.9) / total);
+    const rect = h1.getBoundingClientRect();
+    const top = rect.top + window.scrollY;
+    const ox = (vw - s * total) / 2 - rect.left;
+    const oy = vh / 2 - (s * lh) / 2 - top;
+    const xs = []; let acc = 0;
+    widths.forEach((w) => { xs.push(ox + acc * s); acc += w + gap; });
+    this.setState({ layout: { s, oy, xs, lh } });
+  }
+
+  start() {
+    this.clear();
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return this.finish();
+    this.setState({ typed: ['', '', '', ''], line: 0, phase: 0, skipped: false });
+    const speed = this.props.typeSpeed ?? 70;
+    let t = 600;
+    LINES.forEach((text, li) => {
+      for (let i = 1; i <= text.length; i++) {
+        this.later(() => this.setState(s => {
+          const typed = [...s.typed]; typed[li] = text.slice(0, i);
+          return { typed, line: li };
+        }), t);
+        t += speed;
+      }
+      t += speed * 2;
+    });
+    const hold = this.props.holdTime ?? 700;
+    this.later(() => this.setState({ phase: 1 }), t + hold);
+    this.later(() => this.setState({ phase: 2 }), t + hold + 2300);
+    this.later(() => this.setState({ phase: 3 }), t + hold + 2900);
+  }
+
+  finish() {
+    this.clear();
+    this.setState({ typed: [...LINES], line: 3, phase: 3, skipped: true });
+  }
+
+  renderVals() {
+    const { typed, line, phase, layout } = this.state;
+    const typing = phase === 0;
+    const caret = React.createElement('span', {
+      'aria-hidden': true,
+      style: { display: 'inline-block', width: '.07em', height: '.8em', marginLeft: '.06em', background: '#111', verticalAlign: '-.05em', animation: 'caretBlink 1s step-end infinite' }
+    });
+    const caretOn = (i) => (typing && line === i) || (phase === 3 && i === 3);
+    const t = (i) => {
+      if (!layout) return 'none';
+      if (typing) return `translate(${layout.xs[i]}px, ${layout.oy}px) scale(${layout.s})`;
+      return `translate(0px, ${i * layout.lh}px) scale(1)`;
+    };
+    const tr = (i) => typing ? 'opacity .3s ease' : `transform 1.1s cubic-bezier(.65,0,.35,1) ${i * 90}ms, opacity .3s ease`;
+    const show = phase >= 1;
+    const instant = phase === 3 && this.state.skipped;
+    const STORY = [
+      [['I started with'], ['UI:', 'h'], ['colours, typography, layouts. I still love that part.']],
+      [['Real products taught me that'], ['polish is only half of it.', 'h'], ['If a user gets confused, the design'], ["isn't doing its job.", 'r']],
+      [['Now I think about'], ['how things feel,', 'h'], ['how quickly they make sense, and how small decisions add up. Still learning every day, across design, product and business, without losing the creativity.']]
+    ];
+    let wi = 0;
+    const step = 22;
+    const words = STORY.map(chunks => {
+      const list = [];
+      chunks.forEach(([text, kind]) => text.split(' ').forEach(t => list.push({ t, kind })));
+      return list;
+    });
+    const total = words.reduce((a, l) => a + l.length, 0) * step + STORY.length * 140;
+    let hi = 0;
+    const paras = words.map((list, pi) => ({
+      words: list.map((w, i) => {
+        const next = list[i + 1];
+        const joined = w.kind && next && next.kind === w.kind;
+        const d = instant ? 0 : wi++ * step + pi * 140;
+        const hd = instant ? 0 : total + 150 + (w.kind ? hi++ * 45 : 0);
+        return {
+          t: joined ? w.t + '\u00a0' : w.t,
+          sp: joined || !next ? '' : ' ',
+          o: show ? 1 : 0,
+          blur: show ? '0px' : '6px',
+          y: show ? '0px' : '0.5em',
+          d: d + 'ms',
+          hd: hd + 'ms',
+          hlColor: w.kind === 'h' ? '#ffd84d' : w.kind === 'r' ? 'rgba(212,73,31,.22)' : 'transparent',
+          hlSize: show && w.kind ? '100%' : '0%',
+          color: w.kind === 'r' ? '#d4491f' : w.kind ? '#111' : '#33332f',
+          weight: w.kind ? 600 : 400
+        };
+      })
+    }));
+    const hov = this.state.hov;
+    const setH = (k) => () => this.setState({ hov: k });
+    return {
+      paras,
+      hWorkOn: setH('work'), hHireOn: setH('hire'), hWhoOn: setH('who'), hOff: setH(null),
+      workColor: hov === 'work' ? '#ffd84d' : '#fbfbfa',
+      workLift: hov === 'work' ? 'translateY(-3px) rotate(-1deg)' : 'none',
+      workShadow: hov === 'work' ? '4px 5px 0 #ffd84d' : '0 0 0 transparent',
+      workArrow: hov === 'work' ? '6px' : '0px',
+      hireFill: hov === 'hire' ? 1 : 0,
+      hireLift: hov === 'hire' ? 'translateY(-3px) rotate(1deg)' : 'none',
+      hireShadow: hov === 'hire' ? '4px 5px 0 #111' : '0 0 0 transparent',
+      whoColor: hov === 'who' ? '#d4491f' : '#111',
+      whoLine: hov === 'who' ? 1 : 0,
+      restScale: phase >= 2 ? 1 : 0.92,
+      noteDrop: phase >= 2 ? '0px' : '-28px',
+      noteSpin: phase >= 2 ? '0deg' : '-8deg',
+      noteSpin2: phase >= 2 ? '0deg' : '7deg',
+      h1Ref: this.h1Ref, m1: this.m1, m2: this.m2, m3: this.m3, m4: this.m4,
+      ready: layout ? 1 : 0,
+      t1: t(0), t2: t(1), t3: t(2), t4: t(3),
+      tr1: tr(0), tr2: tr(1), tr3: tr(2), tr4: tr(3),
+      l1: typed[0], l2: typed[1], l3: typed[2], l4: typed[3],
+      c1: caretOn(0), c2: caretOn(1), c3: caretOn(2), c4: caretOn(3),
+      caret,
+      markScale: typed[1].length === LINES[1].length ? 1 : 0,
+      storyOpacity: phase >= 1 ? 1 : 0,
+      storyShift: phase >= 1 ? '0' : '14px',
+      restOpacity: phase >= 2 ? 1 : 0,
+      restShift: phase >= 2 ? '0' : '14px',
+      headerOpacity: phase >= 3 ? 1 : 0,
+      headerShift: phase >= 3 ? '0' : '-10px',
+      showReplay: phase === 3 && (this.props.showReplay ?? true),
+      showSkipHint: typing,
+      skip: () => { if (this.state.phase < 3) this.finish(); },
+      replay: (e) => { e.stopPropagation(); this.start(); }
+    };
+  }
+}
+</script>
+
+
+</body></html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html><head><script src="aa77ae4c49f525bc.js"></script>
+<script src="feb8ddc9d0566a4f.js"></script>
+<script>
+window.__DC_SRC = "\nconst LETTER = ['To whoever is hiring,', '', 'I\u2019m Ratna \u2014 a UI/UX designer in Ahmedabad,', 'moving into product design.', '', 'One shipped app, one under NDA, and a habit', 'of asking why before how.', '', 'Available immediately. R\u00e9sum\u00e9 below.'].join('\\n');\n\nconst PIECES = {\n  paper: { y: 80, s: 0.94 }, title: { y: -90, s: 1.25 },\n  photo: { x: -520, y: 80, r: -28, rest: -2.5 }, note: { x: 380, y: -220, r: 24, rest: -2 }, contact: { x: 460 },\n  work: { x: -460, r: -8 }, edu: { x: -460, y: 120, r: 7 }, hobbies: { y: 220, r: -4 },\n  expT: { x: 420 }, e0: { x: -480, y: -160, r: -35, rest: -3 }, e1: { x: 520, y: -120, r: 30, rest: 2.5 },\n  e2: { x: -380, y: 220, r: 25, rest: -4 }, e3: { x: 460, y: 260, r: -30, rest: 3 },\n  toolsT: { x: 420 }, t0: { y: -360, r: -22, i: 0 }, t1: { y: -420, r: 18, i: 1 }, t2: { y: -380, r: -16, i: 2 }, t3: { y: -440, r: 22, i: 3 },\n  stamp: { s: 3, r: -40, rest: -10 }\n};\n\nclass Component extends DCLogic {\n  state = { n: 0, loaded: false, seen: {}, copied: false };\n  r1 = React.createRef(); r2 = React.createRef();\n  pr = Object.fromEntries(Object.keys(PIECES).map(k => [k, React.createRef()]));\n  calc = () => {\n    this.raf = 0;\n    const vh = window.innerHeight || 800;\n    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n    const pz = {};\n    for (const k in PIECES) {\n      const c = PIECES[k], el = this.pr[k].current;\n      let p = 1;\n      if (el && !reduce) {\n        const top = el.getBoundingClientRect().top;\n        p = (vh * 0.98 - top) / (vh * 0.42) - (c.i || 0) * 0.12;\n        p = Math.max(0, Math.min(1, p));\n      }\n      const e = 1 - Math.pow(1 - p, 3), q = 1 - e;\n      const rest = c.rest || 0;\n      pz[k] = {\n        t: 'translate(' + ((c.x || 0) * q).toFixed(1) + 'px,' + ((c.y || 0) * q).toFixed(1) + 'px) rotate(' + (rest + (c.r || 0) * q).toFixed(2) + 'deg) scale(' + (1 + ((c.s || 1) - 1) * q).toFixed(3) + ')',\n        o: Math.min(1, p * 1.8).toFixed(3)\n      };\n    }\n    this.setState({ pz });\n  };\n  onScroll = () => { if (!this.raf) this.raf = requestAnimationFrame(this.calc); };\n\n  componentDidMount() {\n    window.addEventListener('scroll', this.onScroll, { passive: true });\n    window.addEventListener('resize', this.onScroll);\n    this.calc();\n    setTimeout(this.calc, 300);\n    this.t0 = setTimeout(() => this.setState({ loaded: true }), 60);\n    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n    if (reduce) this.setState({ n: LETTER.length });\n    else this.t1 = setTimeout(() => {\n      this.iv = setInterval(() => {\n        this.setState(s => {\n          if (s.n >= LETTER.length) { clearInterval(this.iv); return null; }\n          return { n: s.n + 1 };\n        });\n      }, 32);\n    }, 700);\n    if (!('IntersectionObserver' in window)) return this.setState({ seen: { a: 1, b: 1 } });\n    this.io = new IntersectionObserver(es => es.forEach(e => {\n      if (e.isIntersecting) { const k = e.target.getAttribute('data-k'); this.setState(s => ({ seen: { ...s.seen, [k]: 1 } })); this.io.unobserve(e.target); }\n    }), { threshold: 0.12 });\n    [[this.r2, 'b']].forEach(([r, k]) => { if (r.current) { r.current.setAttribute('data-k', k); this.io.observe(r.current); } });\n  }\n  componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); cancelAnimationFrame(this.raf); [this.t0, this.t1, this.ct].forEach(clearTimeout); clearInterval(this.iv); this.io && this.io.disconnect(); }\n\n  renderVals() {\n    const p = this.props;\n    const { loaded, seen, copied, n } = this.state;\n    const email = p.contactEmail ?? 'hello@example.com';\n    const linkedin = p.linkedin ?? 'linkedin.com/in/username';\n    const behance = p.behance ?? 'behance.net/username';\n    const a = !!seen.a, b = !!seen.b;\n    return {\n      r1: this.r1, r2: this.r2, pr: this.pr, pz: this.state.pz,\n      linkedin, behance,\n      eduYears: p.eduYears ?? '20XX \u2014 20XX', eduDegree: p.eduDegree ?? 'ADD YOUR DEGREE', eduSchool: p.eduSchool ?? 'Institute name, city',\n      ld: { o: loaded ? 1 : 0, y: loaded ? '0%' : '105%', s: loaded ? 1 : 0, ry: loaded ? '0px' : '14px' },\n      typed: LETTER.slice(0, n),\n      caret: React.createElement('i', { 'aria-hidden': true, style: { display: 'inline-block', width: '.55rem', height: '1.05em', marginLeft: '.1rem', background: '#23231f', verticalAlign: '-.18em', animation: 'caretBlink 1s step-end infinite' } }),\n      email, mailto: 'mailto:' + email,\n      phone: p.phone ?? '+91 00000 00000',\n      linkedinHref: 'https://' + linkedin.replace(/^https?:\\/\\//, ''),\n      behanceHref: 'https://' + behance.replace(/^https?:\\/\\//, ''),\n      resumeUrl: p.resumeUrl || '#',\n      copyLabel: copied ? 'Copied \u2713' : 'Copy',\n      copyBg: copied ? '#b8dccb' : '#111',\n      copyColor: copied ? '#111' : '#fbfbfa',\n      copyEmail: () => {\n        try { navigator.clipboard.writeText(email); } catch (e) {}\n        this.setState({ copied: true }); clearTimeout(this.ct);\n        this.ct = setTimeout(() => this.setState({ copied: false }), 1500);\n      },\n      rv: { o: a ? 1 : 0, y: a ? '0px' : '30px', shadow: a ? '8px 8px 0 #2440b8' : '0 0 0 #2440b8' },\n      skills: ['Product design', 'Interaction design', 'Mobile (iOS / Android)', 'Design systems', 'User research', 'Prototyping', 'Usability testing', 'Developer handoff']\n        .map((t, i) => ({ t, o: a ? 1 : 0, s: a ? 1 : 0.8, d: (400 + i * 60) + 'ms' })),\n      tools: [['Figma', '94%'], ['Prototyping', '86%'], ['HTML / CSS / JS', '74%'], ['After Effects', '52%']]\n        .map(([t, w], i) => ({ t, w: a ? w : '0%', d: (600 + i * 120) + 'ms' })),\n      hi: { o: b ? 1 : 0, s: b ? 1 : 1.4, y: b ? '0%' : '110%', r: b ? '0deg' : '6deg', line: b ? 1 : 0, wave: b ? 'wave 2.4s ease-in-out 1.2s infinite' : 'none' }\n    };\n  }\n}\n";
+window.__DC_FN = function (DCLogic, StreamableLogic, React) {
+
+const LETTER = ['To whoever is hiring,', '', 'I’m Ratna — a UI/UX designer in Ahmedabad,', 'moving into product design.', '', 'One shipped app, one under NDA, and a habit', 'of asking why before how.', '', 'Available immediately. Résumé below.'].join('\n');
+
+const PIECES = {
+  paper: { y: 80, s: 0.94 }, title: { y: -90, s: 1.25 },
+  photo: { x: -520, y: 80, r: -28, rest: -2.5 }, note: { x: 380, y: -220, r: 24, rest: -2 }, contact: { x: 460 },
+  work: { x: -460, r: -8 }, edu: { x: -460, y: 120, r: 7 }, hobbies: { y: 220, r: -4 },
+  expT: { x: 420 }, e0: { x: -480, y: -160, r: -35, rest: -3 }, e1: { x: 520, y: -120, r: 30, rest: 2.5 },
+  e2: { x: -380, y: 220, r: 25, rest: -4 }, e3: { x: 460, y: 260, r: -30, rest: 3 },
+  toolsT: { x: 420 }, t0: { y: -360, r: -22, i: 0 }, t1: { y: -420, r: 18, i: 1 }, t2: { y: -380, r: -16, i: 2 }, t3: { y: -440, r: 22, i: 3 },
+  stamp: { s: 3, r: -40, rest: -10 }
+};
+
+class Component extends DCLogic {
+  state = { n: 0, loaded: false, seen: {}, copied: false };
+  r1 = React.createRef(); r2 = React.createRef();
+  pr = Object.fromEntries(Object.keys(PIECES).map(k => [k, React.createRef()]));
+  calc = () => {
+    this.raf = 0;
+    const vh = window.innerHeight || 800;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pz = {};
+    for (const k in PIECES) {
+      const c = PIECES[k], el = this.pr[k].current;
+      let p = 1;
+      if (el && !reduce) {
+        const top = el.getBoundingClientRect().top;
+        p = (vh * 0.98 - top) / (vh * 0.42) - (c.i || 0) * 0.12;
+        p = Math.max(0, Math.min(1, p));
+      }
+      const e = 1 - Math.pow(1 - p, 3), q = 1 - e;
+      const rest = c.rest || 0;
+      pz[k] = {
+        t: 'translate(' + ((c.x || 0) * q).toFixed(1) + 'px,' + ((c.y || 0) * q).toFixed(1) + 'px) rotate(' + (rest + (c.r || 0) * q).toFixed(2) + 'deg) scale(' + (1 + ((c.s || 1) - 1) * q).toFixed(3) + ')',
+        o: Math.min(1, p * 1.8).toFixed(3)
+      };
+    }
+    this.setState({ pz });
+  };
+  onScroll = () => { if (!this.raf) this.raf = requestAnimationFrame(this.calc); };
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    this.calc();
+    setTimeout(this.calc, 300);
+    this.t0 = setTimeout(() => this.setState({ loaded: true }), 60);
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) this.setState({ n: LETTER.length });
+    else this.t1 = setTimeout(() => {
+      this.iv = setInterval(() => {
+        this.setState(s => {
+          if (s.n >= LETTER.length) { clearInterval(this.iv); return null; }
+          return { n: s.n + 1 };
+        });
+      }, 32);
+    }, 700);
+    if (!('IntersectionObserver' in window)) return this.setState({ seen: { a: 1, b: 1 } });
+    this.io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { const k = e.target.getAttribute('data-k'); this.setState(s => ({ seen: { ...s.seen, [k]: 1 } })); this.io.unobserve(e.target); }
+    }), { threshold: 0.12 });
+    [[this.r2, 'b']].forEach(([r, k]) => { if (r.current) { r.current.setAttribute('data-k', k); this.io.observe(r.current); } });
+  }
+  componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); cancelAnimationFrame(this.raf); [this.t0, this.t1, this.ct].forEach(clearTimeout); clearInterval(this.iv); this.io && this.io.disconnect(); }
+
+  renderVals() {
+    const p = this.props;
+    const { loaded, seen, copied, n } = this.state;
+    const email = p.contactEmail ?? 'hello@example.com';
+    const linkedin = p.linkedin ?? 'linkedin.com/in/username';
+    const behance = p.behance ?? 'behance.net/username';
+    const a = !!seen.a, b = !!seen.b;
+    return {
+      r1: this.r1, r2: this.r2, pr: this.pr, pz: this.state.pz,
+      linkedin, behance,
+      eduYears: p.eduYears ?? '20XX — 20XX', eduDegree: p.eduDegree ?? 'ADD YOUR DEGREE', eduSchool: p.eduSchool ?? 'Institute name, city',
+      ld: { o: loaded ? 1 : 0, y: loaded ? '0%' : '105%', s: loaded ? 1 : 0, ry: loaded ? '0px' : '14px' },
+      typed: LETTER.slice(0, n),
+      caret: React.createElement('i', { 'aria-hidden': true, style: { display: 'inline-block', width: '.55rem', height: '1.05em', marginLeft: '.1rem', background: '#23231f', verticalAlign: '-.18em', animation: 'caretBlink 1s step-end infinite' } }),
+      email, mailto: 'mailto:' + email,
+      phone: p.phone ?? '+91 00000 00000',
+      linkedinHref: 'https://' + linkedin.replace(/^https?:\/\//, ''),
+      behanceHref: 'https://' + behance.replace(/^https?:\/\//, ''),
+      resumeUrl: p.resumeUrl || '#',
+      copyLabel: copied ? 'Copied ✓' : 'Copy',
+      copyBg: copied ? '#b8dccb' : '#111',
+      copyColor: copied ? '#111' : '#fbfbfa',
+      copyEmail: () => {
+        try { navigator.clipboard.writeText(email); } catch (e) {}
+        this.setState({ copied: true }); clearTimeout(this.ct);
+        this.ct = setTimeout(() => this.setState({ copied: false }), 1500);
+      },
+      rv: { o: a ? 1 : 0, y: a ? '0px' : '30px', shadow: a ? '8px 8px 0 #2440b8' : '0 0 0 #2440b8' },
+      skills: ['Product design', 'Interaction design', 'Mobile (iOS / Android)', 'Design systems', 'User research', 'Prototyping', 'Usability testing', 'Developer handoff']
+        .map((t, i) => ({ t, o: a ? 1 : 0, s: a ? 1 : 0.8, d: (400 + i * 60) + 'ms' })),
+      tools: [['Figma', '94%'], ['Prototyping', '86%'], ['HTML / CSS / JS', '74%'], ['After Effects', '52%']]
+        .map(([t, w], i) => ({ t, w: a ? w : '0%', d: (600 + i * 120) + 'ms' })),
+      hi: { o: b ? 1 : 0, s: b ? 1 : 1.4, y: b ? '0%' : '110%', r: b ? '0deg' : '6deg', line: b ? 1 : 0, wave: b ? 'wave 2.4s ease-in-out 1.2s infinite' : 'none' }
+    };
+  }
+}
+
+;return (typeof Component!=="undefined"&&Component)||undefined;
+};
+</script>
+<script>window.__resources = {"https://unpkg.com/react@18.3.1/umd/react.production.min.js": "aa77ae4c49f525bc.js", "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "feb8ddc9d0566a4f.js"};</script>
+<meta charset="utf-8">
+<title>Hire Me — Ratna Rajput</title>
+<meta name="description" content="Ratna Rajput — product designer. Portfolio, case studies and contact.">
+<meta property="og:title" content="Hire Me — Ratna Rajput">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ffd84d'/%3E%3Ctext x='50' y='70' font-size='62' font-family='Georgia,serif' text-anchor='middle' fill='%23111'%3ER%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="2e38395c4a4ac9dd.js"></script>
+
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<style>/* latin-ext */
+@font-face {
+  font-family: 'Caveat Brush';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("97c494d960f8a0bc.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Caveat Brush';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("db29dca26092755d.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("83c9b6204609578b.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("e510419bc627aadc.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("99a7c18e5b3d2969.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("daeff530b773fd9e.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("83c9b6204609578b.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("e510419bc627aadc.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("99a7c18e5b3d2969.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("daeff530b773fd9e.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Special Elite';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1677ee31d0816875.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Special Elite';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("f6a504bc195422f2.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+html,body{margin:0;background:#fbfbfa;color:#111;font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#111;text-decoration:none}
+a:hover{color:#d4491f}
+@keyframes caretBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes wave{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-10deg)}}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.45}}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;background:#fbfbfa;isolation:isolate;overflow-x:clip">
+  <div style="position:fixed;inset:0;z-index:-1;background-image:linear-gradient(#e6e6e3 1px,transparent 1px),linear-gradient(90deg,#e6e6e3 1px,transparent 1px);background-size:96px 96px;opacity:.55;pointer-events:none"></div>
+
+  <header style="display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;padding:1.1rem clamp(1.25rem,4vw,3rem)">
+    <a href="index.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:1.6rem;transform:rotate(-2deg)">Ratna Rajput</a>
+    <nav style="display:flex;gap:clamp(1rem,3vw,2.6rem);flex-wrap:wrap">
+      <a href="who-i-am.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease" style-hover="color:#d4491f;transform:translateY(-2px) rotate(-3deg)">Who I AM?</a>
+      <a href="what-i-do.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease" style-hover="color:#d4491f;transform:translateY(-2px) rotate(-3deg)">What I Do?</a>
+      <a href="#top" style="position:relative;display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);color:#d4491f">Hire ME!<span style="position:absolute;left:-4%;right:-4%;bottom:-.1rem;z-index:-1;height:.35rem;border-radius:999px;background:#ffd84d"></span></a>
+    </nav>
+  </header>
+
+  <main style="max-width:1140px;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem)">
+
+    <!-- TYPEWRITER (original) -->
+    <section data-screen-label="04 Hire me — Typewriter" style="display:flex;justify-content:center;padding:1rem 0 0">
+      <div style="position:relative;width:min(73.75rem,100%)">
+        <article style="position:relative;box-sizing:border-box;width:clamp(18rem,44.8%,100%);min-height:26.8rem;margin:0 auto;padding:2.75rem 2.25rem 4.6rem;border-radius:3px 12px 3px 3px;background:#f4efe2;box-shadow:0 18px 44px rgba(17,17,17,.14)">
+          <i style="position:absolute;top:1.75rem;right:2.25rem;left:2.25rem;height:1px;background:#2b2b28"></i>
+          <pre style="min-height:18rem;margin:1.25rem 0 0;color:#23231f;white-space:pre-wrap;font-family:'Special Elite','Courier New',monospace;font-size:clamp(.72rem,1.35vw,1rem);line-height:2">{{ typed }}{{ caret }}</pre>
+          <i style="position:absolute;right:2.25rem;bottom:2.1rem;left:2.25rem;border-top:1px dotted #6b6b66"></i>
+        </article>
+        <img src="d2694941811b42c7.png" alt="Illustrated typewriter" style="position:relative;z-index:2;display:block;width:100%;margin-top:-8%">
+      </div>
+    </section>
+
+    <section data-screen-label="04 Hire me — Actions" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.8rem;padding:1.5rem 0 clamp(3rem,6vw,4.5rem)">
+      <a href="{{ mailto }}" style="display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;border-radius:999px;background:#111;color:#fbfbfa;font-size:.92rem;font-weight:700;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease" style-hover="color:#ffd84d;transform:translateY(-3px) rotate(-1deg);box-shadow:4px 5px 0 #ffd84d">✉ {{ email }}</a>
+      <a href="#resume" style="display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.5rem;border:1.5px solid #111;border-radius:999px;background:#fff;font-size:.92rem;font-weight:700;transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .2s ease" style-hover="background:#ffd84d;color:#111;transform:translateY(-3px) rotate(1deg)">Read the résumé ↓</a>
+    </section>
+
+    <!-- RÉSUMÉ (scroll-assembled) -->
+    <section id="resume" data-screen-label="04 Hire me — Résumé" style="margin:0 calc(-1 * clamp(1.25rem,4vw,3rem));padding:clamp(2.5rem,6vw,4.5rem) clamp(1rem,4vw,3rem);background-color:#111;background-image:radial-gradient(circle,#3a3a3a 1.4px,transparent 1.6px);background-size:34px 34px">
+      <div ref="{{ pr.paper }}" style=""><div style="transform:{{ pz.paper.t }};opacity:{{ pz.paper.o }};will-change:transform,opacity"><article style="position:relative;max-width:1000px;margin:0 auto;padding:clamp(1.5rem,4vw,3.5rem);background:#f3f1ec;background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:5px 5px;color:#111;box-shadow:0 30px 80px rgba(0,0,0,.5)">
+
+        <div ref="{{ pr.title }}" style=""><div style="transform:{{ pz.title.t }};opacity:{{ pz.title.o }};will-change:transform,opacity"><div style="text-align:center">
+          <h2 style="margin:0;font-size:clamp(3.4rem,9vw,7rem);font-weight:700;letter-spacing:-.05em;line-height:.85">RÉSUMÉ</h2>
+          <div aria-hidden="true" style="height:clamp(1.4rem,3vw,2.4rem);overflow:hidden;font-size:clamp(3.4rem,9vw,7rem);font-weight:700;letter-spacing:-.05em;line-height:.85;color:#111;opacity:.18;transform:scaleY(-1);-webkit-mask-image:linear-gradient(to top,#000,transparent);mask-image:linear-gradient(to top,#000,transparent)">RÉSUMÉ</div>
+        </div></div></div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:clamp(1.8rem,4vw,3rem);align-items:start;margin-top:clamp(1.5rem,3vw,2.5rem)">
+          <div ref="{{ pr.photo }}" style="transform:rotate(0deg)"><div style="transform:{{ pz.photo.t }};opacity:{{ pz.photo.o }};will-change:transform,opacity"><div style="position:relative;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr);gap:1.2rem;padding:1rem;background:#fff;box-shadow:0 14px 34px rgba(0,0,0,.18)">
+            <span style="position:absolute;top:-1.4rem;left:1.2rem;z-index:2;width:1.3rem;height:4.6rem;border:3px solid #8a8a8a;border-radius:12px;transform:rotate(-12deg)"></span>
+            <img src="2a01576360675b67.webp" alt="Ratna Rajput" style="display:block;width:100%;height:100%;min-height:15rem;object-fit:cover">
+            <div>
+              <h3 style="margin:0;font-size:clamp(2rem,3.6vw,2.8rem);font-weight:700;letter-spacing:-.04em;line-height:.9">RATNA<br>RAJPUT</h3>
+              <span style="display:inline-block;margin-top:.6rem;padding:.1rem .35rem;background:#ffd84d;font-size:.9rem;font-weight:700;transform:rotate(-1.5deg)">UI/UX → Product Designer</span>
+              <p style="margin:.9rem 0 0;color:#333;font-size:.82rem;line-height:1.55;text-wrap:pretty">Designer with a frontend past and a psychology habit.</p>
+              <p style="margin:.5rem 0 0;color:#333;font-size:.82rem;line-height:1.55;text-wrap:pretty">Happiest in 0→1 mobile work, from research through handoff.</p>
+            </div>
+          </div></div></div>
+
+          <div style="display:grid;gap:1.4rem">
+            <div ref="{{ pr.note }}" style=""><div style="transform:{{ pz.note.t }};opacity:{{ pz.note.o }};will-change:transform,opacity"><p style="margin:0;font-family:'Caveat Brush',cursive;font-size:clamp(1.4rem,2.2vw,1.75rem);line-height:1.15;color:#111">Please don't hesitate to reach me if this résumé doesn't answer everything. <span style="display:inline-block;transform:rotate(30deg)">↙</span></p></div></div>
+            <div ref="{{ pr.contact }}" style=""><div style="transform:{{ pz.contact.t }};opacity:{{ pz.contact.o }};will-change:transform,opacity"><div>
+              <h3 style="display:flex;align-items:center;gap:.8rem;margin:0;font-size:clamp(1.5rem,2.6vw,2rem);font-weight:700;letter-spacing:-.03em;line-height:1">Contact<span style="flex:1;height:1.5px;background:#111"></span><span style="font-size:.8rem">✦</span></h3>
+              <div style="display:grid;gap:.55rem;margin-top:1rem;font-size:.88rem">
+                <div style="display:grid;grid-template-columns:5rem 1fr;gap:.6rem"><span style="font-family:'Special Elite',monospace;font-size:.72rem;color:#555">PHONE</span><span style="font-weight:500">{{ phone }}</span></div>
+                <div style="display:grid;grid-template-columns:5rem 1fr;gap:.6rem"><span style="font-family:'Special Elite',monospace;font-size:.72rem;color:#555">EMAIL</span><a href="{{ mailto }}" style="font-weight:700;word-break:break-all">{{ email }}</a></div>
+                <div style="display:grid;grid-template-columns:5rem 1fr;gap:.6rem"><span style="font-family:'Special Elite',monospace;font-size:.72rem;color:#555">LINKEDIN</span><a href="{{ linkedinHref }}" target="_blank" rel="noopener" style="font-weight:500">{{ linkedin }}</a></div>
+                <div style="display:grid;grid-template-columns:5rem 1fr;gap:.6rem"><span style="font-family:'Special Elite',monospace;font-size:.72rem;color:#555">BEHANCE</span><a href="{{ behanceHref }}" target="_blank" rel="noopener" style="font-weight:500">{{ behance }}</a></div>
+                <div style="display:grid;grid-template-columns:5rem 1fr;gap:.6rem"><span style="font-family:'Special Elite',monospace;font-size:.72rem;color:#555">BASE</span><span style="font-weight:500">Ahmedabad · remote / relocation</span></div>
+              </div>
+            </div></div></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:clamp(2rem,5vw,3.5rem);align-items:start;margin-top:clamp(2.2rem,5vw,3.5rem)">
+          <div style="display:grid;gap:2.2rem">
+            <div ref="{{ pr.work }}" style=""><div style="transform:{{ pz.work.t }};opacity:{{ pz.work.o }};will-change:transform,opacity"><div>
+              <h3 style="display:flex;align-items:center;gap:.8rem;margin:0;font-size:clamp(1.5rem,2.6vw,2rem);font-weight:700;letter-spacing:-.03em;line-height:1">Work Experience<span style="flex:1;height:1.5px;background:#111"></span><span style="font-size:.8rem">✦</span></h3>
+              <div style="position:relative;margin-top:1.2rem;padding-left:1.6rem">
+                <span style="position:absolute;left:.42rem;top:.5rem;bottom:.5rem;width:2px;background:#111"></span>
+                <span style="position:absolute;left:0;top:.2rem;width:1rem;height:1rem;border:3px solid #111;border-radius:50%;background:#f3f1ec"></span>
+                <small style="display:block;font-size:.95rem;font-weight:700">2024 — present</small>
+                <strong style="display:block;margin-top:.15rem;font-size:1.1rem;letter-spacing:.02em">UI/UX DESIGNER · <span style="padding:0 .2rem;background:#ffd84d">EALPHABITS</span></strong>
+                <ul style="display:grid;gap:.35rem;margin:.6rem 0 1.3rem;padding-left:1rem;color:#333;font-size:.84rem;line-height:1.5">
+                  <li>Designed <b style="color:#111">Arjun 1.0</b> end to end: research, flows, UI and the team's component set.</li>
+                  <li>Own client communication for a US account, kickoff to phase-one delivery.</li>
+                </ul>
+                <span style="position:absolute;left:0;bottom:2.4rem;width:1rem;height:1rem;border:3px solid #111;border-radius:50%;background:#f3f1ec"></span>
+                <small style="display:block;font-size:.95rem;font-weight:700">Earlier</small>
+                <strong style="display:block;margin-top:.15rem;font-size:1.05rem;letter-spacing:.02em">FRONTEND → DESIGN</strong>
+                <p style="margin:.2rem 0 0;color:#333;font-size:.84rem">Self-taught crossover.</p>
+              </div>
+            </div></div></div>
+            <div ref="{{ pr.edu }}" style=""><div style="transform:{{ pz.edu.t }};opacity:{{ pz.edu.o }};will-change:transform,opacity"><div>
+              <h3 style="display:flex;align-items:center;gap:.8rem;margin:0;font-size:clamp(1.5rem,2.6vw,2rem);font-weight:700;letter-spacing:-.03em;line-height:1">Education<span style="flex:1;height:1.5px;background:#111"></span><span style="font-size:.8rem">✦</span></h3>
+              <div style="position:relative;margin-top:1.2rem;padding-left:1.6rem">
+                <span style="position:absolute;left:0;top:.2rem;width:1rem;height:1rem;border:3px solid #111;border-radius:50%;background:#f3f1ec"></span>
+                <small style="display:block;font-size:.95rem;font-weight:700">{{ eduYears }}</small>
+                <strong style="display:block;margin-top:.15rem;font-size:1.05rem;letter-spacing:.02em">{{ eduDegree }}</strong>
+                <p style="margin:.2rem 0 0;color:#333;font-size:.84rem">{{ eduSchool }}</p>
+              </div>
+            </div></div></div>
+            <div ref="{{ pr.hobbies }}" style=""><div style="transform:{{ pz.hobbies.t }};opacity:{{ pz.hobbies.o }};will-change:transform,opacity"><div>
+              <h3 style="display:flex;align-items:center;gap:.8rem;margin:0;font-size:clamp(1.5rem,2.6vw,2rem);font-weight:700;letter-spacing:-.03em;line-height:1">Off the clock<span style="flex:1;height:1.5px;background:#111"></span><span style="font-size:.8rem">✦</span></h3>
+              <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.1rem">
+                <span style="padding:.4rem .8rem;border:1.5px solid #111;border-radius:999px;font-size:.78rem;font-weight:700">Storytelling</span>
+                <span style="padding:.4rem .8rem;border:1.5px solid #111;border-radius:999px;font-size:.78rem;font-weight:700">Motion &amp; editing</span>
+                <span style="padding:.4rem .8rem;border:1.5px solid #111;border-radius:999px;font-size:.78rem;font-weight:700">Reading</span>
+                <span style="padding:.4rem .8rem;border:1.5px solid #111;border-radius:999px;font-size:.78rem;font-weight:700">Sketching</span>
+              </div>
+            </div></div></div>
+          </div>
+
+          <div style="display:grid;gap:2.2rem">
+            <div ref="{{ pr.expT }}" style=""><div style="transform:{{ pz.expT.t }};opacity:{{ pz.expT.o }};will-change:transform,opacity"><h3 style="display:flex;align-items:center;gap:.8rem;margin:0;font-size:clamp(1.5rem,2.6vw,2rem);font-weight:700;letter-spacing:-.03em;line-height:1">Area of Expertise<span style="flex:1;height:1.5px;background:#111"></span><span style="font-size:.8rem">✦</span></h3></div></div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.2rem;margin-top:-.8rem">
+              <div ref="{{ pr.e0 }}" style=""><div style="transform:{{ pz.e0.t }};opacity:{{ pz.e0.o }};will-change:transform,opacity"><div style="position:relative;padding:1.4rem 1rem;background:#fff;font-family:'Caveat Brush',cursive;font-size:clamp(1.6rem,2.6vw,2.1rem);line-height:1;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.12);clip-path:polygon(0 4%,8% 0,20% 3%,34% 0,50% 2%,66% 0,80% 3%,92% 0,100% 4%,100% 96%,90% 100%,76% 97%,60% 100%,44% 97%,28% 100%,12% 97%,0 100%)"><span style="position:absolute;top:-.6rem;left:30%;width:4.5rem;height:1.2rem;background:rgba(200,200,195,.75);transform:rotate(-6deg)"></span><span style="position:relative;z-index:0">Product<br>design<span style="position:absolute;left:-.1em;right:-.1em;bottom:.08em;z-index:-1;height:.35em;background:#ffd84d"></span></span></div></div></div>
+              <div ref="{{ pr.e1 }}" style=""><div style="transform:{{ pz.e1.t }};opacity:{{ pz.e1.o }};will-change:transform,opacity"><div style="padding:1.4rem 1rem;background:#111;color:#f3f1ec;font-size:clamp(1.05rem,1.8vw,1.35rem);font-weight:700;letter-spacing:-.02em;line-height:1.05;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.18)">Interaction<br>design</div></div></div>
+              <div ref="{{ pr.e2 }}" style=""><div style="transform:{{ pz.e2.t }};opacity:{{ pz.e2.o }};will-change:transform,opacity"><div style="position:relative;padding:1.3rem 1rem;background:#e4e2dc;font-family:'Special Elite',monospace;font-size:clamp(.95rem,1.6vw,1.15rem);line-height:1.25;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.1);background-image:repeating-linear-gradient(#e4e2dc 0 1.4rem,#cfcdc6 1.4rem calc(1.4rem + 1px))">Mobile apps<br><small style="font-size:.7em">iOS · Android</small></div></div></div>
+              <div ref="{{ pr.e3 }}" style=""><div style="transform:{{ pz.e3.t }};opacity:{{ pz.e3.o }};will-change:transform,opacity"><div style="padding:1.3rem 1rem;background:#fff;border:1.5px dashed #111;font-family:'Caveat Brush',cursive;font-size:clamp(1.5rem,2.4vw,1.9rem);line-height:1;text-align:center">Design<br>systems</div></div></div>
+            </div>
+            <p style="margin:-.8rem 0 0;color:#555;font-size:.78rem;line-height:1.5">also: user research · prototyping · usability testing · developer handoff</p>
+
+            <div ref="{{ pr.toolsT }}" style=""><div style="transform:{{ pz.toolsT.t }};opacity:{{ pz.toolsT.o }};will-change:transform,opacity"><h3 style="display:flex;align-items:center;gap:.8rem;margin:0;font-size:clamp(1.5rem,2.6vw,2rem);font-weight:700;letter-spacing:-.03em;line-height:1">Software Skills<span style="flex:1;height:1.5px;background:#111"></span><span style="font-size:.8rem">✦</span></h3></div></div>
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(.6rem,1.5vw,1rem);margin-top:-.6rem;padding-bottom:1rem">
+              <div ref="{{ pr.t0 }}" style=""><div style="transform:{{ pz.t0.t }};opacity:{{ pz.t0.o }};will-change:transform,opacity"><div style="position:relative;display:grid;place-items:center;aspect-ratio:1;padding:.6rem;background:#fff;border:1.5px solid #111;box-shadow:4px 4px 0 #111">
+  <b style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-.04em;line-height:1">Fg</b>
+  <span style="position:absolute;top:.5rem;right:.45rem;font-family:'Special Elite',monospace;font-size:.68rem;writing-mode:vertical-rl;transform:rotate(180deg)">94%</span>
+  <i style="font-family:'Special Elite',monospace;font-size:.62rem;font-style:normal;color:#555">Figma</i>
+  <span style="position:absolute;left:.6rem;right:.6rem;bottom:-.75rem;height:.32rem;border:1px solid #111;border-radius:999px;background:#fff;overflow:hidden"><span style="display:block;height:100%;width:94%;background:#111"></span></span>
+</div></div></div>
+              <div ref="{{ pr.t1 }}" style=""><div style="transform:{{ pz.t1.t }};opacity:{{ pz.t1.o }};will-change:transform,opacity"><div style="position:relative;display:grid;place-items:center;aspect-ratio:1;padding:.6rem;background:#fff;border:1.5px solid #111;box-shadow:4px 4px 0 #111">
+  <b style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-.04em;line-height:1">Pt</b>
+  <span style="position:absolute;top:.5rem;right:.45rem;font-family:'Special Elite',monospace;font-size:.68rem;writing-mode:vertical-rl;transform:rotate(180deg)">86%</span>
+  <i style="font-family:'Special Elite',monospace;font-size:.62rem;font-style:normal;color:#555">Prototyping</i>
+  <span style="position:absolute;left:.6rem;right:.6rem;bottom:-.75rem;height:.32rem;border:1px solid #111;border-radius:999px;background:#fff;overflow:hidden"><span style="display:block;height:100%;width:86%;background:#111"></span></span>
+</div></div></div>
+              <div ref="{{ pr.t2 }}" style=""><div style="transform:{{ pz.t2.t }};opacity:{{ pz.t2.o }};will-change:transform,opacity"><div style="position:relative;display:grid;place-items:center;aspect-ratio:1;padding:.6rem;background:#fff;border:1.5px solid #111;box-shadow:4px 4px 0 #111">
+  <b style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-.04em;line-height:1">&lt;/&gt;</b>
+  <span style="position:absolute;top:.5rem;right:.45rem;font-family:'Special Elite',monospace;font-size:.68rem;writing-mode:vertical-rl;transform:rotate(180deg)">74%</span>
+  <i style="font-family:'Special Elite',monospace;font-size:.62rem;font-style:normal;color:#555">HTML·CSS·JS</i>
+  <span style="position:absolute;left:.6rem;right:.6rem;bottom:-.75rem;height:.32rem;border:1px solid #111;border-radius:999px;background:#fff;overflow:hidden"><span style="display:block;height:100%;width:74%;background:#111"></span></span>
+</div></div></div>
+              <div ref="{{ pr.t3 }}" style=""><div style="transform:{{ pz.t3.t }};opacity:{{ pz.t3.o }};will-change:transform,opacity"><div style="position:relative;display:grid;place-items:center;aspect-ratio:1;padding:.6rem;background:#fff;border:1.5px solid #111;box-shadow:4px 4px 0 #111">
+  <b style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-.04em;line-height:1">Ae</b>
+  <span style="position:absolute;top:.5rem;right:.45rem;font-family:'Special Elite',monospace;font-size:.68rem;writing-mode:vertical-rl;transform:rotate(180deg)">52%</span>
+  <i style="font-family:'Special Elite',monospace;font-size:.62rem;font-style:normal;color:#555">After Effects</i>
+  <span style="position:absolute;left:.6rem;right:.6rem;bottom:-.75rem;height:.32rem;border:1px solid #111;border-radius:999px;background:#fff;overflow:hidden"><span style="display:block;height:100%;width:52%;background:#111"></span></span>
+</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:clamp(2rem,4vw,3rem);padding-top:1.2rem;border-top:1.5px dashed #111">
+          <span style="font-family:'Special Elite',monospace;font-size:.72rem;color:#555">RATNA RAJPUT · RÉSUMÉ · 2026</span>
+          <div ref="{{ pr.stamp }}" style=""><div style="transform:{{ pz.stamp.t }};opacity:{{ pz.stamp.o }};will-change:transform,opacity"><span style="display:inline-block;padding:.35rem .7rem;border:2.5px solid #111;font-family:'Special Elite',monospace;font-size:.85rem;letter-spacing:.12em;white-space:nowrap">AVAILABLE NOW</span></div></div>
+        </div>
+      </article></div></div>
+      <div style="display:flex;justify-content:center;margin-top:1.6rem">
+        <a href="{{ resumeUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 1.4rem;border:1.5px solid #f3f1ec;border-radius:999px;color:#f3f1ec;font-size:.88rem;font-weight:700;transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .2s ease" style-hover="background:#f3f1ec;color:#111;transform:translateY(-3px)">↓ Download as PDF</a>
+      </div>
+    </section>
+
+    <!-- SAY HI -->
+    <section ref="{{ r2 }}" data-screen-label="04 Hire me — Say hi" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem;padding:clamp(3rem,6vw,4.5rem) 0;border-top:1.5px solid #111">
+      <p style="max-width:36rem;margin:0;font-family:'Caveat Brush',cursive;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.1"><span style="display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.1em;margin-bottom:-.1em"><span style="display:inline-block;transform:translateY({{ hi.y }});transition:transform .8s cubic-bezier(.2,.8,.2,1) 0ms">Still</span></span> <span style="display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.1em;margin-bottom:-.1em"><span style="display:inline-block;transform:translateY({{ hi.y }});transition:transform .8s cubic-bezier(.2,.8,.2,1) 110ms">reading?</span></span> <span style="display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.1em;margin-bottom:-.1em"><span style="position:relative;z-index:0;display:inline-block;color:#d4491f;transform:translateY({{ hi.y }}) rotate({{ hi.r }});transform-origin:left bottom;transition:transform .9s cubic-bezier(.34,1.56,.64,1) 380ms">Say hi.<span style="position:absolute;left:0;right:0;bottom:.06em;z-index:-1;height:.22em;border-radius:999px;background:#ffd84d;transform:scaleX({{ hi.line }});transform-origin:left;transition:transform .6s cubic-bezier(.65,0,.35,1) 950ms"></span></span></span><span style="display:inline-block;margin-left:.15em;transform-origin:70% 80%;opacity:{{ hi.o }};animation:{{ hi.wave }}">👋</span></p>
+      <div style="position:relative">
+        <span style="position:absolute;top:-1.6rem;right:-.6rem;z-index:2;padding:.25rem .55rem;border:2px solid #d4491f;color:#d4491f;font-family:'Special Elite',monospace;font-size:.7rem;letter-spacing:.1em;white-space:nowrap;transform-origin:right center;opacity:{{ hi.o }};transform:rotate(8deg) scale({{ hi.s }});transition:opacity .2s ease 1.3s,transform .45s cubic-bezier(.34,1.56,.64,1) 1.3s">REPLY EXPECTED</span>
+        <a href="{{ mailto }}" style="display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.7rem;border-radius:999px;background:#111;color:#fbfbfa;font-size:.95rem;font-weight:700;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease" style-hover="color:#ffd84d;transform:translateY(-3px) rotate(-1deg);box-shadow:4px 5px 0 #ffd84d">Say hi →</a>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;hello@example.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contact&quot;},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+91 00000 00000&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contact&quot;},&quot;linkedin&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;linkedin.com/in/username&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contact&quot;},&quot;behance&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;behance.net/username&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contact&quot;},&quot;resumeUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contact&quot;},&quot;eduYears&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;20XX — 20XX&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Education&quot;},&quot;eduDegree&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;ADD YOUR DEGREE&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Education&quot;},&quot;eduSchool&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Institute name, city&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Education&quot;}}">
+const LETTER = ['To whoever is hiring,', '', 'I’m Ratna — a UI/UX designer in Ahmedabad,', 'moving into product design.', '', 'One shipped app, one under NDA, and a habit', 'of asking why before how.', '', 'Available immediately. Résumé below.'].join('\n');
+
+const PIECES = {
+  paper: { y: 80, s: 0.94 }, title: { y: -90, s: 1.25 },
+  photo: { x: -520, y: 80, r: -28, rest: -2.5 }, note: { x: 380, y: -220, r: 24, rest: -2 }, contact: { x: 460 },
+  work: { x: -460, r: -8 }, edu: { x: -460, y: 120, r: 7 }, hobbies: { y: 220, r: -4 },
+  expT: { x: 420 }, e0: { x: -480, y: -160, r: -35, rest: -3 }, e1: { x: 520, y: -120, r: 30, rest: 2.5 },
+  e2: { x: -380, y: 220, r: 25, rest: -4 }, e3: { x: 460, y: 260, r: -30, rest: 3 },
+  toolsT: { x: 420 }, t0: { y: -360, r: -22, i: 0 }, t1: { y: -420, r: 18, i: 1 }, t2: { y: -380, r: -16, i: 2 }, t3: { y: -440, r: 22, i: 3 },
+  stamp: { s: 3, r: -40, rest: -10 }
+};
+
+class Component extends DCLogic {
+  state = { n: 0, loaded: false, seen: {}, copied: false };
+  r1 = React.createRef(); r2 = React.createRef();
+  pr = Object.fromEntries(Object.keys(PIECES).map(k => [k, React.createRef()]));
+  calc = () => {
+    this.raf = 0;
+    const vh = window.innerHeight || 800;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pz = {};
+    for (const k in PIECES) {
+      const c = PIECES[k], el = this.pr[k].current;
+      let p = 1;
+      if (el && !reduce) {
+        const top = el.getBoundingClientRect().top;
+        p = (vh * 0.98 - top) / (vh * 0.42) - (c.i || 0) * 0.12;
+        p = Math.max(0, Math.min(1, p));
+      }
+      const e = 1 - Math.pow(1 - p, 3), q = 1 - e;
+      const rest = c.rest || 0;
+      pz[k] = {
+        t: 'translate(' + ((c.x || 0) * q).toFixed(1) + 'px,' + ((c.y || 0) * q).toFixed(1) + 'px) rotate(' + (rest + (c.r || 0) * q).toFixed(2) + 'deg) scale(' + (1 + ((c.s || 1) - 1) * q).toFixed(3) + ')',
+        o: Math.min(1, p * 1.8).toFixed(3)
+      };
+    }
+    this.setState({ pz });
+  };
+  onScroll = () => { if (!this.raf) this.raf = requestAnimationFrame(this.calc); };
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    this.calc();
+    setTimeout(this.calc, 300);
+    this.t0 = setTimeout(() => this.setState({ loaded: true }), 60);
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) this.setState({ n: LETTER.length });
+    else this.t1 = setTimeout(() => {
+      this.iv = setInterval(() => {
+        this.setState(s => {
+          if (s.n >= LETTER.length) { clearInterval(this.iv); return null; }
+          return { n: s.n + 1 };
+        });
+      }, 32);
+    }, 700);
+    if (!('IntersectionObserver' in window)) return this.setState({ seen: { a: 1, b: 1 } });
+    this.io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { const k = e.target.getAttribute('data-k'); this.setState(s => ({ seen: { ...s.seen, [k]: 1 } })); this.io.unobserve(e.target); }
+    }), { threshold: 0.12 });
+    [[this.r2, 'b']].forEach(([r, k]) => { if (r.current) { r.current.setAttribute('data-k', k); this.io.observe(r.current); } });
+  }
+  componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); cancelAnimationFrame(this.raf); [this.t0, this.t1, this.ct].forEach(clearTimeout); clearInterval(this.iv); this.io && this.io.disconnect(); }
+
+  renderVals() {
+    const p = this.props;
+    const { loaded, seen, copied, n } = this.state;
+    const email = p.contactEmail ?? 'hello@example.com';
+    const linkedin = p.linkedin ?? 'linkedin.com/in/username';
+    const behance = p.behance ?? 'behance.net/username';
+    const a = !!seen.a, b = !!seen.b;
+    return {
+      r1: this.r1, r2: this.r2, pr: this.pr, pz: this.state.pz,
+      linkedin, behance,
+      eduYears: p.eduYears ?? '20XX — 20XX', eduDegree: p.eduDegree ?? 'ADD YOUR DEGREE', eduSchool: p.eduSchool ?? 'Institute name, city',
+      ld: { o: loaded ? 1 : 0, y: loaded ? '0%' : '105%', s: loaded ? 1 : 0, ry: loaded ? '0px' : '14px' },
+      typed: LETTER.slice(0, n),
+      caret: React.createElement('i', { 'aria-hidden': true, style: { display: 'inline-block', width: '.55rem', height: '1.05em', marginLeft: '.1rem', background: '#23231f', verticalAlign: '-.18em', animation: 'caretBlink 1s step-end infinite' } }),
+      email, mailto: 'mailto:' + email,
+      phone: p.phone ?? '+91 00000 00000',
+      linkedinHref: 'https://' + linkedin.replace(/^https?:\/\//, ''),
+      behanceHref: 'https://' + behance.replace(/^https?:\/\//, ''),
+      resumeUrl: p.resumeUrl || '#',
+      copyLabel: copied ? 'Copied ✓' : 'Copy',
+      copyBg: copied ? '#b8dccb' : '#111',
+      copyColor: copied ? '#111' : '#fbfbfa',
+      copyEmail: () => {
+        try { navigator.clipboard.writeText(email); } catch (e) {}
+        this.setState({ copied: true }); clearTimeout(this.ct);
+        this.ct = setTimeout(() => this.setState({ copied: false }), 1500);
+      },
+      rv: { o: a ? 1 : 0, y: a ? '0px' : '30px', shadow: a ? '8px 8px 0 #2440b8' : '0 0 0 #2440b8' },
+      skills: ['Product design', 'Interaction design', 'Mobile (iOS / Android)', 'Design systems', 'User research', 'Prototyping', 'Usability testing', 'Developer handoff']
+        .map((t, i) => ({ t, o: a ? 1 : 0, s: a ? 1 : 0.8, d: (400 + i * 60) + 'ms' })),
+      tools: [['Figma', '94%'], ['Prototyping', '86%'], ['HTML / CSS / JS', '74%'], ['After Effects', '52%']]
+        .map(([t, w], i) => ({ t, w: a ? w : '0%', d: (600 + i * 120) + 'ms' })),
+      hi: { o: b ? 1 : 0, s: b ? 1 : 1.4, y: b ? '0%' : '110%', r: b ? '0deg' : '6deg', line: b ? 1 : 0, wave: b ? 'wave 2.4s ease-in-out 1.2s infinite' : 'none' }
+    };
+  }
+}
+</script>
+
+
+</body></html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html><head><script src="aa77ae4c49f525bc.js"></script>
+<script src="feb8ddc9d0566a4f.js"></script>
+<script>
+window.__DC_SRC = "\nconst U = 'https://ratnaportf-njrqcybn.manus.space/manus-storage/';\nconst PHOTOS = [\n  ['WhatsAppImage2026-08-24at1.08.27AM_d95a7f49.jpeg', 'Ratna at a celebratory outdoor event'],\n  ['WhatsAppImage2026-08-24at1.07.17AM_2f79c215.jpeg', 'Ratna with her team'],\n  ['WhatsAppImage2026-08-25at12.14.44AM_55aaf2a8.jpeg', 'Ratna by the sea'],\n  ['WhatsAppImage2026-08-24at1.01.49AM_7bb17386.jpeg', 'Photo from Ratna\u2019s collection'],\n  ['WhatsAppImage2026-08-24at1.02.41AM_04166f37.webp', 'Photo from Ratna\u2019s collection'],\n  ['WhatsAppImage2026-08-24at1.07.03AM_4d17a8c1.jpeg', 'Photo from Ratna\u2019s collection'],\n  ['WhatsAppImage2026-08-24at11.58.54PM_1625e20a.webp', 'Photo from Ratna\u2019s collection'],\n  ['WhatsAppImage2026-08-24at12.47.59AM_82302ec0.jpeg', 'Photo from Ratna\u2019s collection'],\n  ['WhatsAppImage2026-08-24at12.54.26AM_f4cfe9fd.webp', 'Photo from Ratna\u2019s collection'],\n  ['WhatsAppImage2026-08-24at12.55.49AM_815e6952.webp', 'Photo from Ratna\u2019s collection'],\n  ['WhatsAppImage2026-08-24at12.58.52AM_7a630c19.webp', 'Photo from Ratna\u2019s collection'],\n  ['WhatsAppImage2026-08-25at12.14.28AM_2149df1a.webp', 'Photo from Ratna\u2019s collection']\n];\nconst KEYS = ['s1', 's2', 's3', 's4', 's5'];\n\nclass Component extends DCLogic {\n  state = { seen: {}, roll: true, cta: false };\n  refs_ = KEYS.map(() => React.createRef());\n\n  componentDidMount() {\n    if (!('IntersectionObserver' in window)) return this.setState({ seen: { s1: 1, s2: 1, s3: 1, s4: 1, s5: 1 } });\n    this.io = new IntersectionObserver((entries) => {\n      entries.forEach(e => {\n        if (e.isIntersecting) {\n          const k = e.target.getAttribute('data-k');\n          this.setState(s => ({ seen: { ...s.seen, [k]: 1 } }));\n          this.io.unobserve(e.target);\n        }\n      });\n    }, { threshold: 0.15 });\n    this.refs_.forEach((r, i) => { if (r.current) { r.current.setAttribute('data-k', KEYS[i]); this.io.observe(r.current); } });\n  }\n  componentWillUnmount() { this.io && this.io.disconnect(); }\n\n  renderVals() {\n    const seen = this.state.seen;\n    const on = (k) => !!seen[k];\n    const rv = {\n      s1: { o: on('s1') ? 1 : 0, y: on('s1') ? '0px' : '24px', mark: on('s1') ? 1 : 0 },\n      s2: { o: on('s2') ? 1 : 0, rot: on('s2') ? '-2deg' : '-9deg', sc: on('s2') ? 1 : 0.9 },\n      s3: { o: on('s3') ? 1 : 0, y: on('s3') ? '0px' : '24px', mark: on('s3') ? 1 : 0 },\n      s5: { o: on('s5') ? 1 : 0, y: on('s5') ? '0px' : '24px' }\n    };\n    const note = (n, text, bg, rot, i) => ({\n      n, text, bg,\n      o: on('s2') ? 1 : 0,\n      y: on('s2') ? '0px' : '-30px',\n      rot: on('s2') ? rot : (parseFloat(rot) * 4) + 'deg',\n      d: (300 + i * 140) + 'ms'\n    });\n    const hov = this.state.cta;\n    return {\n      r1: this.refs_[0], r2: this.refs_[1], r3: this.refs_[2], r4: this.refs_[3], r5: this.refs_[4],\n      rv,\n      facts: [\n        { k: 'NOW', v: 'UI/UX designer at EAlphaBits, designing mobile and web products.' },\n        { k: 'HOW', v: 'From rough requirements to flows, interfaces, prototypes and developer handoff. At a startup that means many hats and working closely with developers and founders.' },\n        { k: 'NEXT', v: 'Going deeper into product design: how design decisions connect users, technology and business.' }\n      ],\n      notesL: [\n        note('01', 'started in frontend and never stopped asking why?', '#ffd84d', '-3deg', 0),\n        note('02', 'makes interfaces feel calmer, clearer, kinder.', '#fff', '2deg', 1)\n      ],\n      notesR: [\n        note('03', 'collects small details: words, gestures, tiny frictions.', '#e6ddff', '2.5deg', 2),\n        note('04', 'building things people actually feel.', '#b8dccb', '-2deg', 3)\n      ],\n      photos: [...PHOTOS, ...PHOTOS].map(([f, alt], i) => {\n        const R = window.__resources || {};\n        const n = i + 1;\n        const t = n % 4 === 0 ? 'translateY(-.6rem) rotate(-4deg)' : n % 3 === 0 ? 'rotate(3deg)' : 'rotate(-2deg)';\n        return { src: R['p' + (i % PHOTOS.length)] || U + f, alt, t };\n      }),\n      stack: PHOTOS.slice(0, 4).map(([f], i) => ({\n        src: (window.__resources || {})['p' + i] || U + f,\n        t: `translate(${(i * 0.82).toFixed(2)}rem, ${(i * -0.36).toFixed(2)}rem) rotate(${i * 5}deg)`,\n        anim: i === 3 && this.state.rollOpen ? 'rollWave .82s .24s cubic-bezier(.34,1.56,.64,1) 1 both' : 'none'\n      })),\n      rollOpen: !!this.state.rollOpen,\n      openRoll: () => this.setState({ rollOpen: true }),\n      closeRoll: () => this.setState({ rollOpen: false }),\n      toggleRoll: () => this.setState(s => ({ rollOpen: !s.rollOpen })),\n      folderT: this.state.rollOpen ? 'translateY(-5px) rotate(-1.5deg)' : 'none',\n      folderShadow: this.state.rollOpen ? '0 18px 34px rgba(17,17,17,.22)' : '0 12px 26px rgba(17,17,17,.17)',\n      stripH: this.state.rollOpen ? '10.5rem' : '0rem',\n      stripO: this.state.rollOpen ? 1 : 0,\n      stripBorder: this.state.rollOpen ? '#e6e6e3' : 'transparent',\n      interests: [\n        ['Storytelling', 'Taking an idea and turning it into a story.'],\n        ['Motion & editing', 'How timing, music and movement change how something feels.'],\n        ['Being a better observer', 'Watching people, products and everyday things, not just looking at them.'],\n        ['Reading', 'Books, articles and psychology rabbit holes.'],\n        ['Sketching', 'Picking an old habit back up, and getting better at it.']\n      ].map(([title, body], i) => ({\n        n: '0' + (i + 1), title, body,\n        o: on('s4') ? 1 : 0, x: on('s4') ? '0px' : '-18px', d: (i * 90) + 'ms'\n      })),\n      stats: [\n        ['1+ year', 'designing in a startup'],\n        ['2 products', 'Arjun 1.0 + Navigate Nxt'],\n        ['1 shipped', 'Arjun 1.0'],\n        ['1 side project', 'Pop-up']\n      ].map(([big, small], i) => ({\n        big, small, o: on('s4') ? 1 : 0, sc: on('s4') ? 1 : 0.9, d: (250 + i * 110) + 'ms'\n      })),\n      ctaOn: () => this.setState({ cta: true }),\n      ctaOff: () => this.setState({ cta: false }),\n      ctaColor: hov ? '#ffd84d' : '#fbfbfa',\n      ctaLift: hov ? 'translateY(-3px) rotate(-1deg)' : 'none',\n      ctaShadow: hov ? '4px 5px 0 #ffd84d' : '0 0 0 transparent',\n      ctaArrow: hov ? '6px' : '0px'\n    };\n  }\n}\n";
+window.__DC_FN = function (DCLogic, StreamableLogic, React) {
+
+const U = 'https://ratnaportf-njrqcybn.manus.space/manus-storage/';
+const PHOTOS = [
+  ['WhatsAppImage2026-08-24at1.08.27AM_d95a7f49.jpeg', 'Ratna at a celebratory outdoor event'],
+  ['WhatsAppImage2026-08-24at1.07.17AM_2f79c215.jpeg', 'Ratna with her team'],
+  ['WhatsAppImage2026-08-25at12.14.44AM_55aaf2a8.jpeg', 'Ratna by the sea'],
+  ['WhatsAppImage2026-08-24at1.01.49AM_7bb17386.jpeg', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at1.02.41AM_04166f37.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at1.07.03AM_4d17a8c1.jpeg', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at11.58.54PM_1625e20a.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at12.47.59AM_82302ec0.jpeg', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at12.54.26AM_f4cfe9fd.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at12.55.49AM_815e6952.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at12.58.52AM_7a630c19.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-25at12.14.28AM_2149df1a.webp', 'Photo from Ratna’s collection']
+];
+const KEYS = ['s1', 's2', 's3', 's4', 's5'];
+
+class Component extends DCLogic {
+  state = { seen: {}, roll: true, cta: false };
+  refs_ = KEYS.map(() => React.createRef());
+
+  componentDidMount() {
+    if (!('IntersectionObserver' in window)) return this.setState({ seen: { s1: 1, s2: 1, s3: 1, s4: 1, s5: 1 } });
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const k = e.target.getAttribute('data-k');
+          this.setState(s => ({ seen: { ...s.seen, [k]: 1 } }));
+          this.io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    this.refs_.forEach((r, i) => { if (r.current) { r.current.setAttribute('data-k', KEYS[i]); this.io.observe(r.current); } });
+  }
+  componentWillUnmount() { this.io && this.io.disconnect(); }
+
+  renderVals() {
+    const seen = this.state.seen;
+    const on = (k) => !!seen[k];
+    const rv = {
+      s1: { o: on('s1') ? 1 : 0, y: on('s1') ? '0px' : '24px', mark: on('s1') ? 1 : 0 },
+      s2: { o: on('s2') ? 1 : 0, rot: on('s2') ? '-2deg' : '-9deg', sc: on('s2') ? 1 : 0.9 },
+      s3: { o: on('s3') ? 1 : 0, y: on('s3') ? '0px' : '24px', mark: on('s3') ? 1 : 0 },
+      s5: { o: on('s5') ? 1 : 0, y: on('s5') ? '0px' : '24px' }
+    };
+    const note = (n, text, bg, rot, i) => ({
+      n, text, bg,
+      o: on('s2') ? 1 : 0,
+      y: on('s2') ? '0px' : '-30px',
+      rot: on('s2') ? rot : (parseFloat(rot) * 4) + 'deg',
+      d: (300 + i * 140) + 'ms'
+    });
+    const hov = this.state.cta;
+    return {
+      r1: this.refs_[0], r2: this.refs_[1], r3: this.refs_[2], r4: this.refs_[3], r5: this.refs_[4],
+      rv,
+      facts: [
+        { k: 'NOW', v: 'UI/UX designer at EAlphaBits, designing mobile and web products.' },
+        { k: 'HOW', v: 'From rough requirements to flows, interfaces, prototypes and developer handoff. At a startup that means many hats and working closely with developers and founders.' },
+        { k: 'NEXT', v: 'Going deeper into product design: how design decisions connect users, technology and business.' }
+      ],
+      notesL: [
+        note('01', 'started in frontend and never stopped asking why?', '#ffd84d', '-3deg', 0),
+        note('02', 'makes interfaces feel calmer, clearer, kinder.', '#fff', '2deg', 1)
+      ],
+      notesR: [
+        note('03', 'collects small details: words, gestures, tiny frictions.', '#e6ddff', '2.5deg', 2),
+        note('04', 'building things people actually feel.', '#b8dccb', '-2deg', 3)
+      ],
+      photos: [...PHOTOS, ...PHOTOS].map(([f, alt], i) => {
+        const R = window.__resources || {};
+        const n = i + 1;
+        const t = n % 4 === 0 ? 'translateY(-.6rem) rotate(-4deg)' : n % 3 === 0 ? 'rotate(3deg)' : 'rotate(-2deg)';
+        return { src: R['p' + (i % PHOTOS.length)] || U + f, alt, t };
+      }),
+      stack: PHOTOS.slice(0, 4).map(([f], i) => ({
+        src: (window.__resources || {})['p' + i] || U + f,
+        t: `translate(${(i * 0.82).toFixed(2)}rem, ${(i * -0.36).toFixed(2)}rem) rotate(${i * 5}deg)`,
+        anim: i === 3 && this.state.rollOpen ? 'rollWave .82s .24s cubic-bezier(.34,1.56,.64,1) 1 both' : 'none'
+      })),
+      rollOpen: !!this.state.rollOpen,
+      openRoll: () => this.setState({ rollOpen: true }),
+      closeRoll: () => this.setState({ rollOpen: false }),
+      toggleRoll: () => this.setState(s => ({ rollOpen: !s.rollOpen })),
+      folderT: this.state.rollOpen ? 'translateY(-5px) rotate(-1.5deg)' : 'none',
+      folderShadow: this.state.rollOpen ? '0 18px 34px rgba(17,17,17,.22)' : '0 12px 26px rgba(17,17,17,.17)',
+      stripH: this.state.rollOpen ? '10.5rem' : '0rem',
+      stripO: this.state.rollOpen ? 1 : 0,
+      stripBorder: this.state.rollOpen ? '#e6e6e3' : 'transparent',
+      interests: [
+        ['Storytelling', 'Taking an idea and turning it into a story.'],
+        ['Motion & editing', 'How timing, music and movement change how something feels.'],
+        ['Being a better observer', 'Watching people, products and everyday things, not just looking at them.'],
+        ['Reading', 'Books, articles and psychology rabbit holes.'],
+        ['Sketching', 'Picking an old habit back up, and getting better at it.']
+      ].map(([title, body], i) => ({
+        n: '0' + (i + 1), title, body,
+        o: on('s4') ? 1 : 0, x: on('s4') ? '0px' : '-18px', d: (i * 90) + 'ms'
+      })),
+      stats: [
+        ['1+ year', 'designing in a startup'],
+        ['2 products', 'Arjun 1.0 + Navigate Nxt'],
+        ['1 shipped', 'Arjun 1.0'],
+        ['1 side project', 'Pop-up']
+      ].map(([big, small], i) => ({
+        big, small, o: on('s4') ? 1 : 0, sc: on('s4') ? 1 : 0.9, d: (250 + i * 110) + 'ms'
+      })),
+      ctaOn: () => this.setState({ cta: true }),
+      ctaOff: () => this.setState({ cta: false }),
+      ctaColor: hov ? '#ffd84d' : '#fbfbfa',
+      ctaLift: hov ? 'translateY(-3px) rotate(-1deg)' : 'none',
+      ctaShadow: hov ? '4px 5px 0 #ffd84d' : '0 0 0 transparent',
+      ctaArrow: hov ? '6px' : '0px'
+    };
+  }
+}
+
+;return (typeof Component!=="undefined"&&Component)||undefined;
+};
+</script>
+<script>window.__resources = {"p0": "a191f9f694d8c060.jpg", "p2": "f56e420ec0287da0.jpg", "p5": "7931938de8b040be.jpg", "p9": "e997a4a4141b9a85.webp", "p11": "50df271db89032cc.webp", "p10": "4a18b5d5df5ab8f2.webp", "p1": "3465af22d732414b.jpg", "p8": "7d834e5b4840e240.webp", "p3": "3d1d214ede9b48ca.jpg", "p6": "748522e7fcf85e83.webp", "p4": "9404a9309597a6d5.webp", "p7": "570e7a514e95cf14.jpg", "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "aa77ae4c49f525bc.js", "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "feb8ddc9d0566a4f.js"};</script>
+<meta charset="utf-8">
+<title>Who I Am — Ratna Rajput</title>
+<meta name="description" content="Ratna Rajput — product designer. Portfolio, case studies and contact.">
+<meta property="og:title" content="Who I Am — Ratna Rajput">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ffd84d'/%3E%3Ctext x='50' y='70' font-size='62' font-family='Georgia,serif' text-anchor='middle' fill='%23111'%3ER%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="2e38395c4a4ac9dd.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<style>/* latin-ext */
+@font-face {
+  font-family: 'Caveat Brush';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("97c494d960f8a0bc.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Caveat Brush';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("db29dca26092755d.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("c40fec4ca5a2fa09.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("1742d56d1354261c.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("c0781ea2f2901382.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Special Elite';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1677ee31d0816875.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Special Elite';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("f6a504bc195422f2.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+html,body{margin:0;background:#fbfbfa;color:#111;font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#111;text-decoration:none}
+a:hover{color:#d4491f}
+@keyframes rollMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes rollWave{0%,100%{transform:translate(2.46rem,-1.08rem) rotate(15deg)}34%{transform:translate(2.7rem,-1.63rem) rotate(24deg)}68%{transform:translate(2.56rem,-1.33rem) rotate(11deg)}}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;background:#fbfbfa;overflow:hidden;isolation:isolate">
+  <div style="position:absolute;inset:0;z-index:-1;background-image:linear-gradient(#e6e6e3 1px,transparent 1px),linear-gradient(90deg,#e6e6e3 1px,transparent 1px);background-size:96px 96px;opacity:.75"></div>
+
+  <header style="display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;padding:1.1rem clamp(1.25rem,4vw,3rem)">
+    <a href="index.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:1.6rem;transform:rotate(-2deg)">Ratna Rajput</a>
+    <nav style="display:flex;gap:clamp(1rem,3vw,2.6rem);flex-wrap:wrap">
+      <a href="#top" style="position:relative;display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);color:#d4491f">Who I AM?<span style="position:absolute;left:-4%;right:-4%;bottom:-.1rem;z-index:-1;height:.35rem;border-radius:999px;background:#ffd84d"></span></a>
+      <a href="what-i-do.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease" style-hover="color:#d4491f;transform:translateY(-2px) rotate(-3deg)">What I Do?</a>
+      <a href="hire-me.html" style="display:inline-block;font-family:'Caveat Brush',cursive;font-size:clamp(1.3rem,2.2vw,1.8rem);transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .2s ease" style-hover="color:#d4491f;transform:translateY(-2px) rotate(-3deg)">Hire ME!</a>
+    </nav>
+  </header>
+
+  <main style="max-width:1180px;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem)">
+
+    <!-- 01 INTRO -->
+    <section ref="{{ r1 }}" data-screen-label="02 Who I am — Intro" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,24rem),1fr));gap:clamp(2.5rem,6vw,5rem);align-items:center;padding:clamp(2.5rem,6vw,4.5rem) 0 clamp(3rem,6vw,5rem)">
+      <div style="opacity:{{ rv.s1.o }};transform:translateY({{ rv.s1.y }});transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)">
+        <p style="margin:0;color:#6b6b66;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase">The human file / 01</p>
+        <span style="display:block;height:4rem;margin-top:.8rem;color:#ffd84d;font-family:'Caveat Brush',cursive;font-size:7.5rem;line-height:.6">“</span>
+        <h1 style="margin:0;font-family:'Caveat Brush',cursive;font-size:clamp(2.6rem,5vw,4.4rem);font-weight:400;line-height:1.08;letter-spacing:-.01em;text-wrap:balance">I like making things look good. I care even more about making them <span style="position:relative;z-index:0;white-space:nowrap"><span style="position:absolute;z-index:-1;inset:.18em -.06em -.02em;background:#ffd84d;transform:rotate(-1.3deg) scaleX({{ rv.s1.mark }});transform-origin:left;transition:transform .6s cubic-bezier(.65,0,.35,1) .7s"></span>make sense.</span></h1>
+        <div style="margin-top:1.8rem;padding-left:1.1rem;border-left:3px solid #d4491f">
+          <strong style="display:block;font-size:1rem">Ratna Rajput</strong>
+          <small style="color:#6b6b66;font-size:.85rem">UI/UX designer, Ahmedabad</small>
+        </div>
+      </div>
+
+      <div style="display:grid;gap:1.1rem;padding:clamp(1.6rem,3vw,2.2rem);background:#f4efe2;border-radius:3px 12px 3px 3px;box-shadow:0 18px 40px rgba(17,17,17,.12);transform:translateY({{ rv.s1.y }}) rotate(1deg);opacity:{{ rv.s1.o }};transition:opacity .8s ease .2s,transform .9s cubic-bezier(.2,.8,.2,1) .2s">
+        <p style="margin:0;padding-bottom:.8rem;border-bottom:1px solid #2b2b28;font-family:'Special Elite',monospace;font-size:.85rem;color:#23231f">FILE: RATNA RAJPUT — IN SHORT</p>
+        <sc-for list="{{ facts }}" as="f" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:5.5rem 1fr;gap:.9rem;align-items:baseline">
+            <span style="color:#d4491f;font-family:'Special Elite',monospace;font-size:.78rem">{{ f.k }}</span>
+            <p style="margin:0;color:#23231f;font-size:.96rem;line-height:1.6;text-wrap:pretty">{{ f.v }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- 02 ABOUT BOARD -->
+    <section ref="{{ r2 }}" data-screen-label="02 Who I am — About board" style="padding:clamp(3rem,6vw,4.5rem) 0;border-top:1px solid #e6e6e3">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap">
+        <h2 style="margin:0;font-family:'Caveat Brush',cursive;font-size:clamp(2.6rem,5vw,4rem);font-weight:400;line-height:1">About <em style="color:#d4491f">Ratna</em></h2>
+        <p style="margin:0;color:#6b6b66;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase">four notes, pinned</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:clamp(1.5rem,4vw,3rem);margin-top:2.6rem">
+        <div style="flex:1 1 14rem;display:grid;gap:1.6rem;justify-items:end">
+          <sc-for list="{{ notesL }}" as="n" hint-placeholder-count="2">
+            <article style="width:min(15rem,100%);padding:1.2rem 1.2rem 1.3rem;background:{{ n.bg }};box-shadow:5px 6px 0 rgba(17,17,17,.12);opacity:{{ n.o }};transform:translateY({{ n.y }}) rotate({{ n.rot }});transition:opacity .4s ease {{ n.d }},transform .8s cubic-bezier(.34,1.56,.64,1) {{ n.d }}" style-hover="transform:rotate(0deg) translateY(-6px) scale(1.03)">
+              <b style="color:#d4491f;font-family:'Special Elite',monospace;font-size:.78rem;font-weight:400">{{ n.n }}</b>
+              <p style="margin:.5rem 0 0;font-family:'Caveat Brush',cursive;font-size:1.55rem;line-height:1.1">{{ n.text }}</p>
+            </article>
+          </sc-for>
+        </div>
+        <figure style="flex:0 1 19rem;position:relative;margin:0;padding:.9rem .9rem 3.2rem;background:#fff;box-shadow:0 22px 44px rgba(17,17,17,.16);opacity:{{ rv.s2.o }};transform:rotate({{ rv.s2.rot }}) scale({{ rv.s2.sc }});transition:opacity .6s ease,transform .9s cubic-bezier(.34,1.56,.64,1)" style-hover="transform:rotate(0deg) scale(1.02)">
+          <span style="position:absolute;top:-.8rem;left:34%;width:6rem;height:1.6rem;background:rgba(233,225,196,.92);transform:rotate(-6deg)"></span>
+          <img src="2a01576360675b67.webp" alt="Ratna taking a mirror selfie in a blue saree" style="display:block;width:100%;aspect-ratio:4/5;object-fit:cover;background:#eef3f6">
+          <figcaption style="position:absolute;left:0;right:0;bottom:.8rem;text-align:center;font-family:'Caveat Brush',cursive;font-size:1.45rem">the details person</figcaption>
+        </figure>
+        <div style="flex:1 1 14rem;display:grid;gap:1.6rem;justify-items:start">
+          <sc-for list="{{ notesR }}" as="n" hint-placeholder-count="2">
+            <article style="width:min(15rem,100%);padding:1.2rem 1.2rem 1.3rem;background:{{ n.bg }};box-shadow:5px 6px 0 rgba(17,17,17,.12);opacity:{{ n.o }};transform:translateY({{ n.y }}) rotate({{ n.rot }});transition:opacity .4s ease {{ n.d }},transform .8s cubic-bezier(.34,1.56,.64,1) {{ n.d }}" style-hover="transform:rotate(0deg) translateY(-6px) scale(1.03)">
+              <b style="color:#d4491f;font-family:'Special Elite',monospace;font-size:.78rem;font-weight:400">{{ n.n }}</b>
+              <p style="margin:.5rem 0 0;font-family:'Caveat Brush',cursive;font-size:1.55rem;line-height:1.1">{{ n.text }}</p>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 OFF THE CLOCK -->
+    <section ref="{{ r3 }}" data-screen-label="02 Who I am — Off the clock" style="padding:clamp(3rem,6vw,4.5rem) 0;border-top:1px solid #e6e6e3">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:clamp(1.5rem,5vw,4rem);align-items:end;opacity:{{ rv.s3.o }};transform:translateY({{ rv.s3.y }});transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)">
+        <div>
+          <p style="margin:0;color:#6b6b66;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase">Off the clock</p>
+          <h2 style="margin:.7rem 0 0;font-family:'Caveat Brush',cursive;font-size:clamp(2.8rem,5.4vw,4.4rem);font-weight:400;line-height:.98">Not just the <span style="position:relative;z-index:0"><span style="position:absolute;z-index:-1;inset:.14em -.06em -.04em;background:#ffd84d;transform:rotate(-1.3deg) scaleX({{ rv.s3.mark }});transform-origin:left;transition:transform .6s cubic-bezier(.65,0,.35,1) .5s"></span>screens.</span></h2>
+        </div>
+        <blockquote style="margin:0;padding-left:1.1rem;border-left:3px solid #2440b8;color:#33332f;font-size:1.02rem;line-height:1.65">Equal parts observer, collaborator, and chronic <em style="color:#d4491f">“why does this feel this way?”</em> noticer.</blockquote>
+      </div>
+
+      <div sc-camel-on-mouse-enter="{{ openRoll }}" sc-camel-on-mouse-leave="{{ closeRoll }}" style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-end;gap:.75rem 0;margin-top:5.5rem;opacity:{{ rv.s3.o }};transition:opacity .8s ease .2s">
+        <div style="position:relative;flex:0 0 auto">
+          <div aria-hidden="true" style="position:absolute;z-index:1;top:-3.45rem;left:3.1rem;width:8.4rem;height:5.5rem;pointer-events:none">
+            <sc-for list="{{ stack }}" as="sk" hint-placeholder-count="4">
+              <img src="{{ sk.src }}" alt="" style="position:absolute;width:4.2rem;height:5rem;padding:.18rem .18rem .65rem;background:#fff;box-shadow:0 5px 11px rgba(17,17,17,.18);object-fit:cover;transform-origin:18% 100%;transform:{{ sk.t }};animation:{{ sk.anim }}">
+            </sc-for>
+          </div>
+          <button type="button" sc-camel-on-click="{{ toggleRoll }}" aria-expanded="{{ rollOpen }}" style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;width:16rem;min-height:9.3rem;padding:3.35rem 1.45rem 1.2rem;border:1.5px solid #111;border-radius:3px 3px 0 0;background:#dfe7f6;box-shadow:{{ folderShadow }};color:#111;text-align:left;cursor:pointer;transform:{{ folderT }};transition:transform .28s cubic-bezier(.34,1.56,.64,1),box-shadow .28s">
+            <span style="position:absolute;top:-1.45rem;left:-1.5px;width:8.6rem;height:1.55rem;padding:.42rem .7rem;border:1.5px solid #111;border-bottom:0;border-radius:3px 3px 0 0;background:#dfe7f6;font-size:.54rem;font-weight:700;letter-spacing:.06em">ALL THE OTHER FRAMES</span>
+            <strong style="margin-top:auto;font-family:'Caveat Brush',cursive;font-size:1.4rem;font-weight:400">CAMERA ROLL</strong>
+            <small style="margin-top:.2rem;color:#6b6b66;font-size:.62rem">hover or tap to open</small>
+          </button>
+        </div>
+        <div style="flex:1 1 18rem;min-width:0;height:{{ stripH }};overflow:hidden;border-top:1px solid {{ stripBorder }};opacity:{{ stripO }};transition:height .52s cubic-bezier(.22,1,.36,1),opacity .3s">
+          <div style="display:flex;align-items:flex-end;gap:.7rem;width:max-content;padding:1rem 2.5rem 1rem 3rem;animation:rollMarquee 52s linear infinite">
+            <sc-for list="{{ photos }}" as="ph" hint-placeholder-count="10">
+              <figure style="flex:0 0 6.9rem;margin:0;padding:.28rem .28rem 1.18rem;background:#fff;box-shadow:0 6px 14px rgba(17,17,17,.14);transform:{{ ph.t }}">
+                <img src="{{ ph.src }}" alt="{{ ph.alt }}" loading="lazy" style="display:block;width:6.35rem;height:6.5rem;background:#ebe8e0;object-fit:cover">
+              </figure>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <p style="margin:1.4rem 0 0;font-family:'Caveat Brush',cursive;font-size:1.3rem;color:#6b6b66">Small details, loud laughs, and a lot of room for curiosity.</p>
+    </section>
+
+    <!-- 04 INTERESTS + STATS -->
+    <section ref="{{ r4 }}" data-screen-label="02 Who I am — Interests" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:clamp(2.5rem,6vw,5rem);align-items:start;padding:clamp(3rem,6vw,4.5rem) 0;border-top:1px solid #e6e6e3">
+      <div>
+        <h2 style="margin:0;font-family:'Caveat Brush',cursive;font-size:clamp(2.4rem,4.4vw,3.4rem);font-weight:400;line-height:1">Things I nerd out on</h2>
+        <ol style="margin:1.4rem 0 0;padding:0;list-style:none">
+          <sc-for list="{{ interests }}" as="it" hint-placeholder-count="5">
+            <li style="display:grid;grid-template-columns:2.6rem 1fr;gap:.6rem;padding:1rem 0;border-bottom:1px solid #e6e6e3;opacity:{{ it.o }};transform:translateX({{ it.x }});transition:opacity .5s ease {{ it.d }},transform .6s cubic-bezier(.2,.8,.2,1) {{ it.d }},background .2s ease" style-hover="background:rgba(255,216,77,.28)">
+              <span style="font-family:'Special Elite',monospace;font-size:.85rem;color:#d4491f">{{ it.n }}</span>
+              <div>
+                <strong style="display:block;font-size:1.02rem">{{ it.title }}</strong>
+                <span style="color:#6b6b66;font-size:.88rem;line-height:1.5">{{ it.body }}</span>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-top:1.5px solid #111;border-left:1.5px solid #111;margin-top:clamp(0rem,4vw,4.4rem)">
+        <sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+          <div style="padding:1.4rem 1.2rem;border-right:1.5px solid #111;border-bottom:1.5px solid #111;background:#fff;opacity:{{ st.o }};transform:scale({{ st.sc }});transition:opacity .5s ease {{ st.d }},transform .6s cubic-bezier(.34,1.56,.64,1) {{ st.d }},background .2s ease" style-hover="background:#ffd84d">
+            <strong style="display:block;font-family:'Caveat Brush',cursive;font-size:2.6rem;font-weight:400;line-height:1">{{ st.big }}</strong>
+            <span style="display:block;margin-top:.4rem;color:#33332f;font-size:.84rem;line-height:1.4">{{ st.small }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- 05 PROMPT -->
+    <section ref="{{ r5 }}" data-screen-label="02 Who I am — Prompt" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:2rem;padding:clamp(3.5rem,7vw,5.5rem) 0;border-top:1.5px solid #111;opacity:{{ rv.s5.o }};transform:translateY({{ rv.s5.y }});transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)">
+      <p style="max-width:38rem;margin:0;font-family:'Caveat Brush',cursive;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.1">Enough about me. Want to see what I've <span style="color:#d4491f">actually built?</span></p>
+      <a href="what-i-do.html" sc-camel-on-mouse-enter="{{ ctaOn }}" sc-camel-on-mouse-leave="{{ ctaOff }}" style="display:inline-flex;align-items:center;gap:.5rem;padding:1rem 1.6rem;border-radius:999px;background:#111;color:{{ ctaColor }};font-size:.95rem;font-weight:700;transform:{{ ctaLift }};box-shadow:{{ ctaShadow }};transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease,color .2s ease">
+        <span>What I Do</span>
+        <span style="display:inline-block;transform:translateX({{ ctaArrow }});transition:transform .3s cubic-bezier(.34,1.56,.64,1)">→</span>
+      </a>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="">
+const U = 'https://ratnaportf-njrqcybn.manus.space/manus-storage/';
+const PHOTOS = [
+  ['WhatsAppImage2026-08-24at1.08.27AM_d95a7f49.jpeg', 'Ratna at a celebratory outdoor event'],
+  ['WhatsAppImage2026-08-24at1.07.17AM_2f79c215.jpeg', 'Ratna with her team'],
+  ['WhatsAppImage2026-08-25at12.14.44AM_55aaf2a8.jpeg', 'Ratna by the sea'],
+  ['WhatsAppImage2026-08-24at1.01.49AM_7bb17386.jpeg', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at1.02.41AM_04166f37.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at1.07.03AM_4d17a8c1.jpeg', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at11.58.54PM_1625e20a.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at12.47.59AM_82302ec0.jpeg', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at12.54.26AM_f4cfe9fd.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at12.55.49AM_815e6952.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-24at12.58.52AM_7a630c19.webp', 'Photo from Ratna’s collection'],
+  ['WhatsAppImage2026-08-25at12.14.28AM_2149df1a.webp', 'Photo from Ratna’s collection']
+];
+const KEYS = ['s1', 's2', 's3', 's4', 's5'];
+
+class Component extends DCLogic {
+  state = { seen: {}, roll: true, cta: false };
+  refs_ = KEYS.map(() => React.createRef());
+
+  componentDidMount() {
+    if (!('IntersectionObserver' in window)) return this.setState({ seen: { s1: 1, s2: 1, s3: 1, s4: 1, s5: 1 } });
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const k = e.target.getAttribute('data-k');
+          this.setState(s => ({ seen: { ...s.seen, [k]: 1 } }));
+          this.io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    this.refs_.forEach((r, i) => { if (r.current) { r.current.setAttribute('data-k', KEYS[i]); this.io.observe(r.current); } });
+  }
+  componentWillUnmount() { this.io && this.io.disconnect(); }
+
+  renderVals() {
+    const seen = this.state.seen;
+    const on = (k) => !!seen[k];
+    const rv = {
+      s1: { o: on('s1') ? 1 : 0, y: on('s1') ? '0px' : '24px', mark: on('s1') ? 1 : 0 },
+      s2: { o: on('s2') ? 1 : 0, rot: on('s2') ? '-2deg' : '-9deg', sc: on('s2') ? 1 : 0.9 },
+      s3: { o: on('s3') ? 1 : 0, y: on('s3') ? '0px' : '24px', mark: on('s3') ? 1 : 0 },
+      s5: { o: on('s5') ? 1 : 0, y: on('s5') ? '0px' : '24px' }
+    };
+    const note = (n, text, bg, rot, i) => ({
+      n, text, bg,
+      o: on('s2') ? 1 : 0,
+      y: on('s2') ? '0px' : '-30px',
+      rot: on('s2') ? rot : (parseFloat(rot) * 4) + 'deg',
+      d: (300 + i * 140) + 'ms'
+    });
+    const hov = this.state.cta;
+    return {
+      r1: this.refs_[0], r2: this.refs_[1], r3: this.refs_[2], r4: this.refs_[3], r5: this.refs_[4],
+      rv,
+      facts: [
+        { k: 'NOW', v: 'UI/UX designer at EAlphaBits, designing mobile and web products.' },
+        { k: 'HOW', v: 'From rough requirements to flows, interfaces, prototypes and developer handoff. At a startup that means many hats and working closely with developers and founders.' },
+        { k: 'NEXT', v: 'Going deeper into product design: how design decisions connect users, technology and business.' }
+      ],
+      notesL: [
+        note('01', 'started in frontend and never stopped asking why?', '#ffd84d', '-3deg', 0),
+        note('02', 'makes interfaces feel calmer, clearer, kinder.', '#fff', '2deg', 1)
+      ],
+      notesR: [
+        note('03', 'collects small details: words, gestures, tiny frictions.', '#e6ddff', '2.5deg', 2),
+        note('04', 'building things people actually feel.', '#b8dccb', '-2deg', 3)
+      ],
+      photos: [...PHOTOS, ...PHOTOS].map(([f, alt], i) => {
+        const R = window.__resources || {};
+        const n = i + 1;
+        const t = n % 4 === 0 ? 'translateY(-.6rem) rotate(-4deg)' : n % 3 === 0 ? 'rotate(3deg)' : 'rotate(-2deg)';
+        return { src: R['p' + (i % PHOTOS.length)] || U + f, alt, t };
+      }),
+      stack: PHOTOS.slice(0, 4).map(([f], i) => ({
+        src: (window.__resources || {})['p' + i] || U + f,
+        t: `translate(${(i * 0.82).toFixed(2)}rem, ${(i * -0.36).toFixed(2)}rem) rotate(${i * 5}deg)`,
+        anim: i === 3 && this.state.rollOpen ? 'rollWave .82s .24s cubic-bezier(.34,1.56,.64,1) 1 both' : 'none'
+      })),
+      rollOpen: !!this.state.rollOpen,
+      openRoll: () => this.setState({ rollOpen: true }),
+      closeRoll: () => this.setState({ rollOpen: false }),
+      toggleRoll: () => this.setState(s => ({ rollOpen: !s.rollOpen })),
+      folderT: this.state.rollOpen ? 'translateY(-5px) rotate(-1.5deg)' : 'none',
+      folderShadow: this.state.rollOpen ? '0 18px 34px rgba(17,17,17,.22)' : '0 12px 26px rgba(17,17,17,.17)',
+      stripH: this.state.rollOpen ? '10.5rem' : '0rem',
+      stripO: this.state.rollOpen ? 1 : 0,
+      stripBorder: this.state.rollOpen ? '#e6e6e3' : 'transparent',
+      interests: [
+        ['Storytelling', 'Taking an idea and turning it into a story.'],
+        ['Motion & editing', 'How timing, music and movement change how something feels.'],
+        ['Being a better observer', 'Watching people, products and everyday things, not just looking at them.'],
+        ['Reading', 'Books, articles and psychology rabbit holes.'],
+        ['Sketching', 'Picking an old habit back up, and getting better at it.']
+      ].map(([title, body], i) => ({
+        n: '0' + (i + 1), title, body,
+        o: on('s4') ? 1 : 0, x: on('s4') ? '0px' : '-18px', d: (i * 90) + 'ms'
+      })),
+      stats: [
+        ['1+ year', 'designing in a startup'],
+        ['2 products', 'Arjun 1.0 + Navigate Nxt'],
+        ['1 shipped', 'Arjun 1.0'],
+        ['1 side project', 'Pop-up']
+      ].map(([big, small], i) => ({
+        big, small, o: on('s4') ? 1 : 0, sc: on('s4') ? 1 : 0.9, d: (250 + i * 110) + 'ms'
+      })),
+      ctaOn: () => this.setState({ cta: true }),
+      ctaOff: () => this.setState({ cta: false }),
+      ctaColor: hov ? '#ffd84d' : '#fbfbfa',
+      ctaLift: hov ? 'translateY(-3px) rotate(-1deg)' : 'none',
+      ctaShadow: hov ? '4px 5px 0 #ffd84d' : '0 0 0 transparent',
+      ctaArrow: hov ? '6px' : '0px'
+    };
+  }
+}
+</script>
+
+
+</body></html>
